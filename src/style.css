@@ -346,6 +346,27 @@ a { color: inherit; }
   line-height: 1.75;
 }
 
+/* Shiki 双主题：one-light / one-dark-pro，跟随站点明暗切换 */
+.md-body pre.shiki {
+  padding: 18px 20px;
+  background: color-mix(in srgb, var(--surface-2) 80%, var(--bg));
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.md-body pre.shiki code {
+  display: block;
+  min-width: max-content;
+  color: var(--text);
+}
+.md-body pre.shiki span {
+  color: var(--shiki-light);
+  font-style: inherit;
+  font-weight: inherit;
+}
+html[data-theme='dark'] .md-body pre.shiki span {
+  color: var(--shiki-dark);
+}
+
 /* 表格 */
 .md-body table {
   width: 100%;

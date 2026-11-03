@@ -1,11 +1,23 @@
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { getPost, getNeighbors, CAT_LABEL } from '../utils/posts'
+import { getPost, getNeighbors, getPostHtml, CAT_LABEL } from '../utils/posts'
 
 const route = useRoute()
 const post = computed(() => getPost(route.params.slug))
 const neighbors = computed(() => getNeighbors(route.params.slug))
+
+/** 正文 HTML（含 Shiki 代码高亮，异步渲染） */
+const html = ref('')
+watch(
+  () => route.params.slug,
+  async (slug) => {
+    html.value = ''
+    const p = getPost(slug)
+    if (p) html.value = await getPostHtml(p)
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -29,7 +41,7 @@ const neighbors = computed(() => getNeighbors(route.params.slug))
       </div>
 
       <!-- Markdown 渲染结果 -->
-      <div class="md-body" v-html="post.html"></div>
+      <div class="md-body" v-html="html"></div>
 
       <div class="doc-end mono">— EOF —</div>
     </article>
