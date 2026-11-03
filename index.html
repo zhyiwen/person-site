@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>译文 · 个人站</title>
+    <meta name="description" content="前端工程师译文的技术笔记、读书笔记与毛笔习作。" />
+    <!-- 防止暗色模式下刷新白屏闪烁：在应用挂载前先应用主题 -->
+    <script>
+      (function () {
+        var saved = localStorage.getItem('theme')
+        var dark = saved
+          ? saved === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
