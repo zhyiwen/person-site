@@ -14,7 +14,10 @@ watch(
   async (slug) => {
     html.value = ''
     const p = getPost(slug)
-    if (p) html.value = await getPostHtml(p)
+    if (p) {
+      html.value = await getPostHtml(p)
+      document.title = `${p.title} · 译文 · 个人站`
+    }
   },
   { immediate: true },
 )
