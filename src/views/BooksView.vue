@@ -76,6 +76,9 @@ const filtered = computed(() => {
 const visible = computed(() => filtered.value.slice(0, pageSize.value))
 const hasMore = computed(() => filtered.value.length > pageSize.value)
 
+/* 重读遍数：readDates 里每条记录是一遍读完的日期 */
+const roundOf = (b) => (b.readDates && b.readDates.length > 1 ? b.readDates.length : 0)
+
 watch([keyword, activeCat, activeStatus, activeSort], () => {
   pageSize.value = 24
 })
@@ -183,8 +186,13 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
             loading="lazy"
             @error="(e) => e.target.closest('.cover').classList.add('no-img')"
           />
-          <span v-if="b.aginRead" class="badge mono">重读</span>
+          <span v-if="b.aginRead" class="badge mono">重读 ×{{ roundOf(b) }}</span>
           <span v-else-if="getBookStatus(b) === 'paused'" class="badge mono paused">搁置</span>
+          <!-- hover 明细：每一遍的阅读日期 -->
+          <div v-if="roundOf(b)" class="rd-tip mono">
+            <p class="rd-head">// 重读记录</p>
+            <p v-for="(d, ri) in b.readDates" :key="ri">第{{ ri + 1 }}遍 · {{ d }}</p>
+          </div>
         </div>
         <div class="binfo">
           <h3 :title="b.title">{{ b.title }}</h3>
@@ -196,7 +204,9 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
             </span>
           </div>
           <div class="bmeta mono">
-            <span v-if="b.finishDate">{{ b.finishDate }}</span>
+            <span v-if="b.finishDate">
+              <template v-if="roundOf(b)">第{{ roundOf(b) }}遍 · </template>{{ b.finishDate }}
+            </span>
             <span v-else-if="b.paused" class="em-paused">已搁置</span>
             <span v-else class="em-reading">
               在读 {{ b.currentPage }}/{{ b.totalPages }}
@@ -403,6 +413,31 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   letter-spacing: 1px;
 }
 .badge.paused { background: color-mix(in srgb, var(--text) 55%, transparent); }
+
+/* 重读记录浮层（hover 封面显示） */
+.rd-tip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid color-mix(in srgb, var(--reading) 35%, var(--line));
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+.rd-tip p { margin: 0; }
+.rd-head { color: var(--reading); letter-spacing: 1px; }
+.book-card:hover .rd-tip {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .binfo h3 {
   font-size: 14px;
