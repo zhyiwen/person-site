@@ -1524,7 +1524,7 @@ export const books = [
     doubanRating: 8.0,
     myRating: 0,
     totalPages: 618,
-    currentPage: 330,
+    currentPage: 445,
   },
   {
     title: "人生得遇苏东坡",
@@ -1534,7 +1534,17 @@ export const books = [
     doubanRating: 7.7,
     myRating: 0,
     totalPages: 405,
-    currentPage: 321,
+    currentPage: 331,
+  },
+  {
+    title: "飞刀",
+    author: "刘三叔",
+    category: "literature",
+    image: "s34771271",
+    doubanRating: 8.7,
+    myRating: 0,
+    totalPages: 272,
+    currentPage: 0,
   },
 ];
 
@@ -1567,4 +1577,3 @@ export function matchStatus(book, status) {
   if (status === "finished") return s === "finished" || s === "reread";
   return s === status;
 }
-
