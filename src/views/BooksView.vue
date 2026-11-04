@@ -186,8 +186,9 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
             loading="lazy"
             @error="(e) => e.target.closest('.cover').classList.add('no-img')"
           />
-          <span v-if="b.aginRead" class="badge mono">重读 ×{{ roundOf(b) }}</span>
+          <span v-if="b.aginRead" class="badge mono gold">重读</span>
           <span v-else-if="getBookStatus(b) === 'paused'" class="badge mono paused">搁置</span>
+          <span v-else-if="getBookStatus(b) === 'reading'" class="badge mono reading">在读</span>
           <!-- hover 明细：每一遍的阅读日期 -->
           <div v-if="roundOf(b)" class="rd-tip mono">
             <p class="rd-head">// 重读记录</p>
@@ -408,10 +409,17 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   font-size: 10px;
   padding: 2px 8px;
   border-radius: 5px;
-  background: color-mix(in srgb, var(--reading) 85%, #000);
   color: #fff;
   letter-spacing: 1px;
 }
+/* 重读：金色渐变，经典感 */
+.badge.gold {
+  background: linear-gradient(135deg, #9a6b15, #d9a441 40%, #f3cf6b 62%, #c8922a);
+  color: #3d2a04;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+.badge.reading { background: color-mix(in srgb, var(--tech) 85%, #000); }
 .badge.paused { background: color-mix(in srgb, var(--text) 55%, transparent); }
 
 /* 重读记录浮层（hover 封面显示） */
