@@ -284,6 +284,29 @@ a { color: inherit; }
   color: var(--muted);
 }
 .md-body blockquote p:last-child { margin-bottom: 0; }
+/* 文章信息块（书名 / 章节 / 日期）：行距松一点 */
+.md-body blockquote { line-height: 1.9; }
+
+/* 今日行动（可选区块：文章里写 <div class="action"> 才出现，没有就不渲染） */
+.md-body .action {
+  margin: 2em 0 1.6em;
+  padding: 16px 20px 18px;
+  border: 1px solid color-mix(in srgb, var(--calligraphy) 32%, var(--line));
+  border-left: 3px solid var(--calligraphy);
+  border-radius: 0 8px 8px 0;
+  background: color-mix(in srgb, var(--calligraphy) 6%, transparent);
+}
+.md-body .action .label {
+  margin: 0 0 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--calligraphy);
+}
+.md-body .action p:last-child {
+  margin: 0;
+  color: var(--text);
+}
 
 /* 图片：习作照片 / 插图 */
 .md-body img {
