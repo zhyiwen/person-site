@@ -177,6 +177,8 @@ export const POSTS = Object.entries(modules)
       category: data.category || 'tech',
       tags: data.tags || [],
       excerpt: data.excerpt || '',
+      /** 读书笔记专用：关联的书名，用于在书单页反查笔记 */
+      book: data.book || '',
       body,
       readTime: Math.max(1, Math.round(plain.replace(/\s/g, '').length / 300)),
     }

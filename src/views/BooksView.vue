@@ -1,6 +1,10 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { books, categories, statusOptions, getBookStatus, matchStatus } from '../data/books'
+import { POSTS } from '../utils/posts'
+
+const route = useRoute()
 
 /* ---------- 筛选状态 ---------- */
 const keyword = ref('')
@@ -9,6 +13,20 @@ const activeStatus = ref('all')
 const activeSort = ref('default')
 const pageSize = ref(24)
 
+/** 从全站搜索点书名进来时带着 ?q=书名，直接过滤 */
+watch(
+  () => route.query.q,
+  (v) => {
+    if (typeof v === 'string' && v) {
+      keyword.value = v
+      activeCat.value = 'all'
+      activeStatus.value = 'all'
+      pageSize.value = 24
+    }
+  },
+  { immediate: true },
+)
+
 const sortOptions = [
   { value: 'default', label: '默认' },
   { value: 'douban', label: '豆瓣高分' },
@@ -16,6 +34,17 @@ const sortOptions = [
   { value: 'dateDesc', label: '最近读完' },
   { value: 'dateAsc', label: '最早读完' },
 ]
+
+/* ---------- 书 ↔ 读书笔记 ---------- */
+/** 文章 frontmatter 里写了 book: 书名，就在对应书的卡片上挂「读后记」入口 */
+const noteMap = computed(() => {
+  const map = {}
+  POSTS.forEach((p) => {
+    if (p.book) (map[p.book] = map[p.book] || []).push(p)
+  })
+  return map
+})
+const notesOf = (b) => noteMap.value[b.title] || []
 
 /* ---------- 统计 ---------- */
 const stats = computed(() => ({
@@ -42,6 +71,43 @@ const statusCounts = computed(() => {
   })
   return map
 })
+
+/* ---------- 数据可视化 ---------- */
+const view = ref('shelf')
+
+/** 每年读完本数 */
+const yearStats = computed(() => {
+  const map = {}
+  books.forEach((b) => {
+    if (!b.finishDate) return
+    const y = b.finishDate.slice(0, 4)
+    map[y] = (map[y] || 0) + 1
+  })
+  return Object.keys(map)
+    .sort()
+    .map((y) => ({ year: y, n: map[y] }))
+})
+const maxYear = computed(() => Math.max(1, ...yearStats.value.map((x) => x.n)))
+
+/** 我的评分分布 */
+const ratingDist = computed(() => {
+  const map = {}
+  books.forEach((b) => {
+    if (b.myRating) map[b.myRating] = (map[b.myRating] || 0) + 1
+  })
+  return [5, 4, 3, 2, 1].map((r) => ({ rating: r, n: map[r] || 0 }))
+})
+const maxRating = computed(() => Math.max(1, ...ratingDist.value.map((x) => x.n)))
+
+/** 分类分布（数量降序） */
+const topCats = computed(() =>
+  categories
+    .filter((c) => c.id !== 'all')
+    .map((c) => ({ name: c.name, n: books.filter((b) => b.category === c.id).length }))
+    .filter((c) => c.n > 0)
+    .sort((a, b) => b.n - a.n),
+)
+const maxCat = computed(() => Math.max(1, ...topCats.value.map((x) => x.n)))
 
 /* ---------- 过滤 + 排序 ---------- */
 const filtered = computed(() => {
@@ -115,6 +181,17 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
       </div>
     </div>
 
+    <!-- 视图切换：书架 / 统计 -->
+    <div class="view-tabs mono" v-reveal="50">
+      <button :class="{ active: view === 'shelf' }" @click="view = 'shelf'">
+        <span class="prompt">›</span> 书架
+      </button>
+      <button :class="{ active: view === 'stats' }" @click="view = 'stats'">
+        <span class="prompt">›</span> 统计
+      </button>
+    </div>
+
+    <template v-if="view === 'shelf'">
     <!-- 搜索 -->
     <div class="search-wrap" v-reveal="80">
       <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -217,6 +294,14 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
           <div v-if="!b.finishDate && b.currentPage" class="bar">
             <i :style="{ width: Math.min(100, (b.currentPage / b.totalPages) * 100) + '%' }"></i>
           </div>
+          <router-link
+            v-if="notesOf(b).length"
+            :to="`/posts/${notesOf(b)[0].slug}`"
+            class="note-link mono"
+            :title="notesOf(b)[0].title"
+          >
+            ✎ 读后记<template v-if="notesOf(b).length > 1"> ×{{ notesOf(b).length }}</template> →
+          </router-link>
         </div>
       </div>
     </div>
@@ -228,6 +313,52 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
         加载更多（剩余 {{ filtered.length - pageSize }} 本）
       </button>
     </div>
+    </template>
+
+    <!-- 统计视图 -->
+    <section v-else class="viz" v-reveal>
+      <div class="viz-card card">
+        <div class="viz-head mono">
+          <span>// 每年读完</span>
+          <em>{{ yearStats.length }} 年 · 共 {{ stats.finished }} 本</em>
+        </div>
+        <div class="cols">
+          <div v-for="y in yearStats" :key="y.year" class="col">
+            <span class="cnum mono">{{ y.n }}</span>
+            <div class="cbar" :style="{ height: (y.n / maxYear) * 78 + '%' }"></div>
+            <span class="cyear mono">{{ y.year }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="viz-card card">
+        <div class="viz-head mono">
+          <span>// 我的评分</span>
+          <em>平均 {{ stats.avg }} ★</em>
+        </div>
+        <div class="vrows">
+          <div v-for="r in ratingDist" :key="r.rating" class="vrow">
+            <span class="vlabel mono">{{ '★'.repeat(r.rating) }}</span>
+            <div class="vtrack"><i :style="{ width: (r.n / maxRating) * 100 + '%' }"></i></div>
+            <span class="vnum mono">{{ r.n }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="viz-card card wide">
+        <div class="viz-head mono">
+          <span>// 分类分布</span>
+          <em>{{ topCats.length }} 类</em>
+        </div>
+        <div class="vrows">
+          <div v-for="c in topCats" :key="c.name" class="vrow">
+            <span class="vlabel mono">{{ c.name }}</span>
+            <div class="vtrack"><i :style="{ width: (c.n / maxCat) * 100 + '%' }"></i></div>
+            <span class="vnum mono">{{ c.n }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -254,6 +385,126 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
 .c-reading { color: var(--tech); }
 .c-reread { color: var(--reading); }
 .c-paused { color: var(--faint); }
+
+/* ---------- 视图切换 ---------- */
+.view-tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 22px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.view-tabs button {
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 6px 18px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.view-tabs .prompt { color: var(--faint); margin-right: 2px; }
+.view-tabs button:hover { color: var(--text); }
+.view-tabs button.active {
+  color: var(--primary);
+  background: var(--primary-weak);
+  box-shadow: var(--glow);
+}
+.view-tabs button.active .prompt { color: var(--primary); }
+
+/* ---------- 统计视图 ---------- */
+.viz {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.viz-card { padding: 22px 24px 18px; }
+.viz-card.wide { grid-column: 1 / -1; }
+.viz-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--primary);
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+}
+.viz-head em { font-style: normal; color: var(--faint); font-size: 11px; }
+
+/* 柱状图 */
+.cols {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 210px;
+  padding-top: 4px;
+}
+.col {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.cnum { font-size: 11px; color: var(--muted); }
+.cbar {
+  width: 100%;
+  max-width: 46px;
+  border-radius: 5px 5px 0 0;
+  background: linear-gradient(180deg, var(--primary), color-mix(in srgb, var(--primary) 25%, transparent));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--primary) 35%, transparent);
+  min-height: 3px;
+  transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cyear { font-size: 10px; color: var(--faint); }
+
+/* 横向条 */
+.vrows { display: flex; flex-direction: column; gap: 10px; }
+.vrow {
+  display: grid;
+  grid-template-columns: 88px 1fr 34px;
+  align-items: center;
+  gap: 10px;
+}
+.vlabel {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vtrack {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.vtrack i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--reading), color-mix(in srgb, var(--reading) 40%, transparent));
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* 分类那块用科技青，和评分区分开 */
+.viz-card.wide .vtrack i {
+  background: linear-gradient(90deg, var(--tech), color-mix(in srgb, var(--tech) 40%, transparent));
+}
+.vnum { font-size: 11px; color: var(--faint); text-align: right; }
+
+@media (max-width: 860px) {
+  .viz { grid-template-columns: 1fr; }
+  .viz-card.wide { grid-column: auto; }
+  .cols { height: 170px; }
+  .vrow { grid-template-columns: 70px 1fr 30px; }
+}
 
 /* ---------- 搜索 ---------- */
 .search-wrap {
@@ -498,6 +749,24 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   height: 100%;
   background: linear-gradient(90deg, var(--primary), var(--primary-2));
   border-radius: 2px;
+}
+
+/* 书 ↔ 读后记 */
+.note-link {
+  display: inline-block;
+  width: fit-content;
+  margin-top: 6px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  color: var(--reading);
+  border-bottom: 1px dashed color-mix(in srgb, var(--reading) 45%, transparent);
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.note-link:hover {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  transform: translateX(2px);
 }
 
 .empty {

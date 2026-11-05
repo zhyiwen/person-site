@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import ThemeToggle from './ThemeToggle.vue'
+import GlobalSearch from './GlobalSearch.vue'
 
 const route = useRoute()
 
@@ -43,6 +44,7 @@ const mobileOpen = ref(false)
       </nav>
 
       <div class="nav-right">
+        <GlobalSearch />
         <ThemeToggle />
         <button class="burger" aria-label="菜单" @click="mobileOpen = !mobileOpen">
           <span :class="{ x1: mobileOpen }"></span>
