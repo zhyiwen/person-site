@@ -63,7 +63,7 @@ const { theme, toggleTheme } = useTheme()
   transform: translateY(-50%) rotate(-90deg);
   opacity: 1;
 }
-.track.dark .sun { transform: translateY(-50%) rotate(90deg); opacity: 0.35; }
+.track.dark .sun { transform: translateY(-50%) rotate(90deg); opacity: 0.55; }
 .track.dark .moon { transform: translateY(-50%) rotate(0deg); }
 .knob {
   position: absolute;

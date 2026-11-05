@@ -18,6 +18,9 @@
   --tech: #06a6d6;
   --reading: #7c5cff;
   --calligraphy: #d97a1f;
+  /* 辅助色：沙金（豆瓣分/太阳图标）· 石灰（月亮图标等次要图形） */
+  --sand: #c0801c;
+  --stone: #7d8fa3;
   --glow: 0 8px 28px rgba(6, 166, 214, 0.18);
   --shadow-sm: 0 1px 2px rgba(16, 28, 46, 0.05), 0 2px 8px rgba(16, 28, 46, 0.05);
   --shadow-md: 0 2px 6px rgba(16, 28, 46, 0.06), 0 12px 32px rgba(16, 28, 46, 0.1);
@@ -41,6 +44,8 @@ html[data-theme='dark'] {
   --tech: #2bd9ff;
   --reading: #8b7bff;
   --calligraphy: #ffb454;
+  --sand: #ffc266;
+  --stone: #93a6bd;
   --glow: 0 0 32px rgba(43, 217, 255, 0.16);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.45);

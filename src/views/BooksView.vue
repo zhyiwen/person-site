@@ -720,7 +720,8 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   font-size: 11px;
   margin-top: 4px;
 }
-.douban { color: var(--sand); }
+/* 豆瓣分用中性色，和「我的评分」的金色星区分开 */
+.douban { color: var(--stone); }
 .mine { display: inline-flex; gap: 1px; }
 .mine i { color: var(--line); font-style: normal; font-size: 11px; }
 .mine i.on { color: var(--calligraphy); }
