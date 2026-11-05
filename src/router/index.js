@@ -5,6 +5,7 @@ import ArticlesView from '../views/ArticlesView.vue'
 import ArticleDetailView from '../views/ArticleDetailView.vue'
 import BooksView from '../views/BooksView.vue'
 import CalligraphyView from '../views/CalligraphyView.vue'
+import WorksView from '../views/WorksView.vue'
 import AboutView from '../views/AboutView.vue'
 
 const router = createRouter({
@@ -15,6 +16,7 @@ const router = createRouter({
     { path: '/posts/:slug', name: 'post', component: ArticleDetailView, meta: { title: null } },
     { path: '/books', name: 'books', component: BooksView, meta: { title: '书单' } },
     { path: '/calligraphy', name: 'calligraphy', component: CalligraphyView, meta: { title: '习字' } },
+    { path: '/works', name: 'works', component: WorksView, meta: { title: '作品' } },
     { path: '/about', name: 'about', component: AboutView, meta: { title: '关于' } },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],

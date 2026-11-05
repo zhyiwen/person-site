@@ -1,42 +1,16 @@
 <script setup>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { CHARS, CHARS_SOURCE } from '../data/chars'
 import { postsByCategory } from '../utils/posts'
 import { WORKS } from '../utils/works'
+import InkWall from '../components/InkWall.vue'
 import ArticleCard from '../components/ArticleCard.vue'
 
 const posts = postsByCategory('calligraphy')
 const chars = CHARS
 const works = WORKS
 
-/* ---------- 大图浏览 ---------- */
-const active = ref(-1)
-const hasWorks = works.length > 0
-
-function open(i) { active.value = i }
-function close() { active.value = -1 }
-function step(d) {
-  if (!hasWorks) return
-  active.value = (active.value + d + works.length) % works.length
-}
-
-function onKey(e) {
-  if (active.value < 0) return
-  if (e.key === 'Escape') close()
-  if (e.key === 'ArrowLeft') step(-1)
-  if (e.key === 'ArrowRight') step(1)
-}
-
-onMounted(() => window.addEventListener('keydown', onKey))
-onUnmounted(() => {
-  window.removeEventListener('keydown', onKey)
-  document.body.style.overflow = ''
-})
-
-/* 大图打开时锁住背景滚动 */
-watch(active, (v) => {
-  document.body.style.overflow = v >= 0 ? 'hidden' : ''
-})
+/** 习字页只放最近几件，全集在 /works */
+const PREVIEW = 3
 </script>
 
 <template>
@@ -68,32 +42,11 @@ watch(active, (v) => {
     <section class="wall" v-reveal="60">
       <div class="wall-head">
         <h2 class="sec-title mono">🖼️ ink_wall/ — 整篇习作</h2>
-        <span class="count mono">{{ hasWorks ? works.length + ' pieces' : 'empty' }}</span>
+        <span class="count mono">{{ works.length ? works.length + ' pieces' : 'empty' }}</span>
       </div>
 
-      <!-- 有照片：作品墙 -->
-      <div v-if="hasWorks" class="wall-grid">
-        <figure
-          v-for="(w, i) in works"
-          :key="w.file"
-          class="card work"
-          v-reveal="i * 70"
-          @click="open(i)"
-        >
-          <div class="ph">
-            <img :src="w.url" :alt="w.title" loading="lazy" />
-            <span class="zoom mono">查看</span>
-          </div>
-          <figcaption>
-            <p class="w-title">{{ w.title }}</p>
-            <p class="w-meta mono">
-              <span v-if="w.date">{{ w.date }}</span>
-              <span v-if="w.copy"> · {{ w.copy }}</span>
-            </p>
-            <p v-if="w.note" class="w-note">{{ w.note }}</p>
-          </figcaption>
-        </figure>
-      </div>
+      <!-- 有照片：最近几件预览 -->
+      <InkWall v-if="works.length" :works="works" :limit="PREVIEW" />
 
       <!-- 没照片：空状态 -->
       <div v-else class="card wall-empty" v-reveal>
@@ -103,6 +56,10 @@ watch(active, (v) => {
           整篇临帖照片放进 <code>src/assets/ink/</code>，命名 <code>日期-标题.jpg</code>，这里会自动排成作品墙。
         </p>
       </div>
+
+      <router-link v-if="works.length > PREVIEW" to="/works" class="wall-more mono">
+        全部 {{ works.length }} 张作品 →
+      </router-link>
     </section>
 
     <section class="posts">
@@ -117,23 +74,6 @@ watch(active, (v) => {
         <p class="empty-hint">习字记录还没开始写 —— 哪一遍临得最有感觉，或者卡在哪一笔，写下来就是一篇。</p>
       </div>
     </section>
-
-    <!-- 大图 -->
-    <transition name="lb">
-      <div v-if="active >= 0" class="lightbox" @click.self="close">
-        <button class="lb-close" aria-label="关闭" @click="close">✕</button>
-        <button v-if="works.length > 1" class="lb-nav prev" aria-label="上一张" @click.stop="step(-1)">‹</button>
-        <figure class="lb-figure">
-          <img :src="works[active].url" :alt="works[active].title" />
-          <figcaption class="mono">
-            {{ works[active].title }}
-            <span v-if="works[active].date"> · {{ works[active].date }}</span>
-            <span v-if="works[active].copy"> · {{ works[active].copy }}</span>
-          </figcaption>
-        </figure>
-        <button v-if="works.length > 1" class="lb-nav next" aria-label="下一张" @click.stop="step(1)">›</button>
-      </div>
-    </transition>
   </div>
 </template>
 
@@ -200,55 +140,24 @@ watch(active, (v) => {
 }
 .count { font-size: 12px; color: var(--faint); letter-spacing: 1px; }
 
-.wall-grid {
-  /* 瀑布流：不裁切、不留边带，照片按原比例排 */
-  columns: 3;
-  column-gap: 16px;
-}
-.work {
+.wall-more {
   display: block;
-  padding: 10px;
-  margin: 0 0 16px;
-  cursor: zoom-in;
-  break-inside: avoid;
-}
-.ph {
-  position: relative;
-  overflow: hidden;
-  border-radius: 10px;
-  background: var(--surface-2);
-}
-.ph img {
-  width: 100%;
-  height: auto;
-  display: block;
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.work:hover .ph img { transform: scale(1.04); }
-.zoom {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
-  font-size: 11px;
+  width: fit-content;
+  margin: 8px auto 0;
+  padding: 9px 18px;
+  font-size: 12px;
   letter-spacing: 1px;
-  padding: 3px 8px;
+  text-decoration: none;
+  color: var(--primary);
+  border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--line));
   border-radius: 999px;
-  color: #041018;
-  background: var(--primary);
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  background: color-mix(in srgb, var(--primary) 7%, transparent);
+  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
 }
-.work:hover .zoom { opacity: 1; transform: translateY(0); }
-
-figcaption { padding: 12px 6px 4px; }
-.w-title { font-size: 14px; letter-spacing: 0.5px; }
-.w-meta { font-size: 11px; color: var(--faint); margin-top: 4px; }
-.w-note {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 8px;
-  line-height: 1.7;
+.wall-more:hover {
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  border-color: var(--primary);
+  transform: translateY(-2px);
 }
 
 /* ---------- 空状态占位槽 ---------- */
@@ -301,90 +210,8 @@ code {
 .empty-line { font-size: 13px; color: var(--primary); margin-bottom: 8px; }
 .empty-hint { font-size: 14px; color: var(--muted); }
 
-/* ---------- 大图浏览 ---------- */
-.lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  background: rgba(4, 10, 16, 0.9);
-  backdrop-filter: blur(6px);
-  display: grid;
-  place-items: center;
-  padding: 40px 72px;
-}
-.lb-figure {
-  max-width: 100%;
-  max-height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  animation: lbIn 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.lb-figure img {
-  max-width: min(88vw, 900px);
-  max-height: 78vh;
-  object-fit: contain;
-  border-radius: 10px;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
-  background: #0b1118;
-}
-.lb-figure figcaption {
-  font-size: 12px;
-  color: rgba(221, 231, 242, 0.72);
-  letter-spacing: 1px;
-  text-align: center;
-}
-@keyframes lbIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: none; }
-}
-.lb-close {
-  position: absolute;
-  top: 22px;
-  right: 24px;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.06);
-  color: #dde7f2;
-  font-size: 14px;
-  cursor: pointer;
-  transition: transform 0.25s ease, background 0.25s ease;
-}
-.lb-close:hover { transform: rotate(90deg); background: rgba(255, 255, 255, 0.14); }
-.lb-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.06);
-  color: #dde7f2;
-  font-size: 24px;
-  line-height: 1;
-  cursor: pointer;
-  transition: background 0.25s ease, border-color 0.25s ease;
-}
-.lb-nav:hover { background: rgba(255, 255, 255, 0.16); border-color: var(--primary); }
-.lb-nav.prev { left: 18px; }
-.lb-nav.next { right: 18px; }
-
-.lb-enter-active,
-.lb-leave-active { transition: opacity 0.25s ease; }
-.lb-enter-from,
-.lb-leave-to { opacity: 0; }
-
 @media (max-width: 860px) {
   .glyph-row { grid-template-columns: repeat(4, 1fr); }
-  .wall-grid { columns: 2; }
   .posts .grid { grid-template-columns: 1fr; }
-  .lightbox { padding: 24px 12px; }
-  .lb-nav { width: 38px; height: 38px; }
-  .lb-nav.prev { left: 8px; }
-  .lb-nav.next { right: 8px; }
 }
 </style>

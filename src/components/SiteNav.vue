@@ -7,6 +7,7 @@ const links = [
   { to: '/articles', label: '文章', cmd: '/articles' },
   { to: '/books', label: '书单', cmd: '/books' },
   { to: '/calligraphy', label: '习字', cmd: '/ink' },
+  { to: '/works', label: '作品', cmd: '/works' },
   { to: '/about', label: '关于', cmd: '/about' },
 ]
 
