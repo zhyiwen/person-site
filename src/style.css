@@ -284,8 +284,30 @@ a { color: inherit; }
   color: var(--muted);
 }
 .md-body blockquote p:last-child { margin-bottom: 0; }
+/* 摘抄块：多条划线共用一个引用块，段间距收紧，别把版面撑太长 */
+.md-body blockquote p { margin-bottom: 0.62em; }
 /* 文章信息块（书名 / 章节 / 日期）：行距松一点 */
 .md-body blockquote { line-height: 1.9; }
+
+/* 想法 / 批注（摘抄文里跟在自己划线后面的几句话，写 <div class="thought"> 才出现） */
+.md-body .thought {
+  margin: -0.4em 0 1.8em;
+  padding: 2px 0 2px 16px;
+  border-left: 2px dashed color-mix(in srgb, var(--primary) 42%, transparent);
+}
+.md-body .thought::before {
+  content: "想法";
+  display: block;
+  margin-bottom: 5px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--primary);
+}
+.md-body .thought p {
+  margin: 0;
+  color: var(--text);
+}
 
 /* 今日行动（可选区块：文章里写 <div class="action"> 才出现，没有就不渲染） */
 .md-body .action {
