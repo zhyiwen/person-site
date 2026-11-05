@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue'
 import { CHARS, CHARS_SOURCE } from '../data/chars'
 import { postsByCategory } from '../utils/posts'
 import { WORKS } from '../utils/works'
@@ -9,8 +10,14 @@ const posts = postsByCategory('calligraphy')
 const chars = CHARS
 const works = WORKS
 
-/** 习字页只放最近几件，全集在 /works */
-const PREVIEW = 3
+/**
+ * 作品不多时全部平铺（3 列正好排满 3 行），
+ * 超过这个数量才收起、露出「查看全部」入口，全集在 /works
+ */
+const FULL_SHOW = 9
+const overflow = computed(() => works.length > FULL_SHOW)
+/** 不收起时传 0 = 全部显示 */
+const previewLimit = computed(() => (overflow.value ? FULL_SHOW : 0))
 </script>
 
 <template>
@@ -45,8 +52,8 @@ const PREVIEW = 3
         <span class="count mono">{{ works.length ? works.length + ' pieces' : 'empty' }}</span>
       </div>
 
-      <!-- 有照片：最近几件预览 -->
-      <InkWall v-if="works.length" :works="works" :limit="PREVIEW" />
+      <!-- 有照片：9 张以内全部平铺，多了才收起 -->
+      <InkWall v-if="works.length" :works="works" :limit="previewLimit" />
 
       <!-- 没照片：空状态 -->
       <div v-else class="card wall-empty" v-reveal>
@@ -57,7 +64,7 @@ const PREVIEW = 3
         </p>
       </div>
 
-      <router-link v-if="works.length > PREVIEW" to="/works" class="wall-more mono">
+      <router-link v-if="overflow" to="/works" class="wall-more mono">
         全部 {{ works.length }} 张作品 →
       </router-link>
     </section>

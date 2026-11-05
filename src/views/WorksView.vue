@@ -13,5 +13,24 @@ const works = WORKS
     </div>
 
     <InkWall :works="works" />
+
+    <router-link to="/calligraphy" class="back mono">← 回到习字</router-link>
   </div>
 </template>
+
+<style scoped>
+.back {
+  display: block;
+  width: fit-content;
+  margin: 28px auto 0;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-decoration: none;
+  color: var(--faint);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.back:hover {
+  color: var(--primary);
+  transform: translateX(-3px);
+}
+</style>

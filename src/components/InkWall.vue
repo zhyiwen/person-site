@@ -13,7 +13,6 @@ const props = defineProps({
 })
 
 const shown = computed(() => (props.limit > 0 ? props.works.slice(0, props.limit) : props.works))
-const rest = computed(() => Math.max(0, props.works.length - shown.value.length))
 
 /* ---------- 大图浏览 ---------- */
 const active = ref(-1)
@@ -76,7 +75,6 @@ watch(active, (v) => {
     </div>
 
     <slot name="empty" v-if="!shown.length" />
-    <p v-if="rest" class="rest mono">// 另有 {{ rest }} 张未在此处显示</p>
 
     <!-- 大图 -->
     <transition name="lb">
@@ -162,12 +160,6 @@ figcaption {
   color: var(--muted);
   margin-top: 8px;
   line-height: 1.7;
-}
-.rest {
-  font-size: 12px;
-  color: var(--faint);
-  text-align: center;
-  margin-top: 4px;
 }
 
 /* ---------- 大图浏览 ---------- */

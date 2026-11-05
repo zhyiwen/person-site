@@ -1,15 +1,21 @@
 <script setup>
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import ThemeToggle from './ThemeToggle.vue'
+
+const route = useRoute()
 
 const links = [
   { to: '/', label: '首页', cmd: '~' },
   { to: '/articles', label: '文章', cmd: '/articles' },
   { to: '/books', label: '书单', cmd: '/books' },
-  { to: '/calligraphy', label: '习字', cmd: '/ink' },
-  { to: '/works', label: '作品', cmd: '/works' },
+  // 作品全集不占导航位，入口在习字页内；访问 /works 时「习字」保持高亮
+  { to: '/calligraphy', label: '习字', cmd: '/ink', also: ['/works'] },
   { to: '/about', label: '关于', cmd: '/about' },
 ]
+
+/** 子页面也算所属栏目 */
+const isActive = (l) => route.path === l.to || (l.also || []).includes(route.path)
 
 const mobileOpen = ref(false)
 </script>
@@ -28,6 +34,7 @@ const mobileOpen = ref(false)
           :key="l.to"
           :to="l.to"
           class="link"
+          :class="{ 'router-link-active': isActive(l) }"
           @click="mobileOpen = false"
         >
           <span class="cmd mono">{{ l.cmd }}</span>
