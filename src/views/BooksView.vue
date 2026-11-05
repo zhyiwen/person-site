@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { books, categories, statusOptions, getBookStatus, matchStatus } from '../data/books'
 import { POSTS } from '../utils/posts'
+import { compareTitles, initialOf } from '../utils/pinyin'
 
 const route = useRoute()
 
@@ -10,7 +11,7 @@ const route = useRoute()
 const keyword = ref('')
 const activeCat = ref('all')
 const activeStatus = ref('all')
-const activeSort = ref('default')
+const activeSort = ref('pinyin')
 const pageSize = ref(24)
 
 /** 从全站搜索点书名进来时带着 ?q=书名，直接过滤 */
@@ -28,7 +29,8 @@ watch(
 )
 
 const sortOptions = [
-  { value: 'default', label: '默认' },
+  { value: 'pinyin', label: '首字母 A→Z' },
+  { value: 'pinyinDesc', label: '首字母 Z→A' },
   { value: 'douban', label: '豆瓣高分' },
   { value: 'mine', label: '我的评分' },
   { value: 'dateDesc', label: '最近读完' },
@@ -121,6 +123,15 @@ const filtered = computed(() => {
 
   const byDate = (a, b) => (b.finishDate || '').localeCompare(a.finishDate || '')
   switch (activeSort.value) {
+    case 'pinyin':
+      list = [...list].sort((a, b) => compareTitles(a.title, b.title))
+      break
+    case 'pinyinDesc': {
+      const asc = [...list].sort((a, b) => compareTitles(a.title, b.title)).reverse()
+      const tail = asc.filter((b) => initialOf(b.title) === '#')
+      list = asc.filter((b) => initialOf(b.title) !== '#').concat(tail)
+      break
+    }
     case 'douban':
       list = [...list].sort((a, b) => b.doubanRating - a.doubanRating)
       break
@@ -134,12 +145,24 @@ const filtered = computed(() => {
       list = [...list].sort((a, b) => (a.finishDate || '9999').localeCompare(b.finishDate || '9999'))
       break
     default:
-      list = [...list].sort(byDate)
+      list = [...list].sort((a, b) => compareTitles(a.title, b.title))
   }
   return list
 })
 
 const visible = computed(() => filtered.value.slice(0, pageSize.value))
+
+/** 首字母排序时按字母分组，每组前面插一条组标（其余排序方式不出组标） */
+const showLetters = computed(() => activeSort.value === 'pinyin' || activeSort.value === 'pinyinDesc')
+const shelfList = computed(() => {
+  let prev = ''
+  return visible.value.map((b) => {
+    const letter = showLetters.value ? initialOf(b.title) : ''
+    const head = letter && letter !== prev
+    if (head) prev = letter
+    return { ...b, _letter: letter, _head: head }
+  })
+})
 const hasMore = computed(() => filtered.value.length > pageSize.value)
 
 /* 重读遍数：readDates 里每条记录是一遍读完的日期 */
@@ -255,7 +278,11 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
 
     <!-- 书籍网格 -->
     <div class="shelf">
-      <div v-for="(b, i) in visible" :key="`${b.title}-${i}`" class="book-card" v-reveal="Math.min(i, 8) * 40">
+      <template v-for="(b, i) in shelfList" :key="`${b.title}-${i}`">
+        <div v-if="b._head" class="shelf-letter mono">
+          <b>{{ b._letter }}</b><i></i>
+        </div>
+        <div class="book-card" v-reveal="Math.min(i, 8) * 40">
         <div class="cover">
           <img
             :src="`/covers/${b.image}.jpg`"
@@ -303,7 +330,8 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
             ✎ 读后记<template v-if="notesOf(b).length > 1"> ×{{ notesOf(b).length }}</template> →
           </router-link>
         </div>
-      </div>
+        </div>
+      </template>
     </div>
 
     <div v-if="!filtered.length" class="empty mono">// no books matched — 换个关键词试试</div>
@@ -610,6 +638,25 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 20px 18px;
+}
+/* 首字母分组标（只在首字母排序时出现），横跨整行 */
+.shelf-letter {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 -2px;
+}
+.shelf-letter b {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--primary);
+}
+.shelf-letter i {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
 }
 .book-card {
   display: flex;
