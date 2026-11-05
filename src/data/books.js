@@ -1423,7 +1423,7 @@ export const books = [
     myRating: 0,
     paused: false,
     totalPages: 5584,
-    currentPage: 986,
+    currentPage: 1178,
   },
   {
     title: "不要担心2小时和8公里以外的事情",
@@ -1534,7 +1534,7 @@ export const books = [
     doubanRating: 7.7,
     myRating: 0,
     totalPages: 405,
-    currentPage: 331,
+    currentPage: 354,
   },
   {
     title: "飞刀",
@@ -1544,7 +1544,7 @@ export const books = [
     doubanRating: 8.7,
     myRating: 0,
     totalPages: 272,
-    currentPage: 0,
+    currentPage: 10,
   },
 ];
 
