@@ -18,6 +18,7 @@
   --tech: #06a6d6;
   --reading: #7c5cff;
   --calligraphy: #d97a1f;
+  --green: #2a8f5a;
   /* 辅助色：沙金（豆瓣分/太阳图标）· 石灰（月亮图标等次要图形） */
   --sand: #c0801c;
   --stone: #7d8fa3;
@@ -44,6 +45,7 @@ html[data-theme='dark'] {
   --tech: #2bd9ff;
   --reading: #8b7bff;
   --calligraphy: #ffb454;
+  --green: #2f9e63;
   --sand: #ffc266;
   --stone: #93a6bd;
   --glow: 0 0 32px rgba(43, 217, 255, 0.16);

@@ -668,7 +668,11 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 1px 3px rgba(0, 0, 0, 0.25);
 }
-.badge.reading { background: color-mix(in srgb, var(--tech) 85%, #000); }
+/* 在读：绿色，跟「重读」的金色、「搁置」的灰色区分开 */
+.badge.reading {
+  background: color-mix(in srgb, var(--green) 92%, #000);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
 .badge.paused { background: color-mix(in srgb, var(--text) 55%, transparent); }
 
 /* 重读记录浮层（hover 封面显示） */
@@ -733,7 +737,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   margin-top: 4px;
   flex-wrap: wrap;
 }
-.em-reading { color: var(--tech); }
+.em-reading { color: var(--green); }
 .em-paused { color: var(--faint); }
 .wc { opacity: 0.7; }
 .bar {
@@ -746,7 +750,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
 .bar i {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--primary-2));
+  background: linear-gradient(90deg, color-mix(in srgb, var(--green) 55%, #fff), var(--green));
   border-radius: 2px;
 }
 
