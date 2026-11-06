@@ -184,7 +184,7 @@ export const books = [
     finishDate: "2022-05-08",
 
     doubanRating: 9.3,
-    myRating: 5,
+    myRating: 6,
   },
   {
     title: "基督山伯爵",
@@ -264,7 +264,7 @@ export const books = [
     finishDate: "2026-02-03",
 
     doubanRating: 9.1,
-    myRating: 5,
+    myRating: 6,
     aginRead: true,
     readDates: ["2023-08-15", "2026-02-03"],
   },
@@ -786,7 +786,7 @@ export const books = [
     finishDate: "2023-06-28",
 
     doubanRating: 9.1,
-    myRating: 5,
+    myRating: 6,
   },
   {
     title: "她来劈开这座山",
@@ -902,7 +902,7 @@ export const books = [
     finishDate: "2023-02-12",
 
     doubanRating: 9.2,
-    myRating: 5,
+    myRating: 6,
   },
   {
     title: "谁动了我的奶酪？",

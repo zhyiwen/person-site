@@ -53,7 +53,11 @@ const stats = computed(() => ({
   reading: books.filter((b) => matchStatus(b, 'reading')).length,
   reread: books.filter((b) => matchStatus(b, 'reread')).length,
   paused: books.filter((b) => matchStatus(b, 'paused')).length,
-  avg: (books.reduce((s, b) => s + (b.myRating || 0), 0) / books.length).toFixed(1),
+  /* 均值只算 0-5 的正常评分；myRating=6 是「推荐」，不参与均分 */
+  avg: (() => {
+    const rated = books.filter((b) => b.myRating && b.myRating < 6)
+    return (rated.reduce((s, b) => s + b.myRating, 0) / Math.max(1, rated.length)).toFixed(1)
+  })(),
 }))
 
 const catCounts = computed(() => {
@@ -89,13 +93,15 @@ const yearStats = computed(() => {
 })
 const maxYear = computed(() => Math.max(1, ...yearStats.value.map((x) => x.n)))
 
-/** 我的评分分布 */
+/** 我的评分分布（myRating=6 是「推荐」，单独一行排在最上面） */
 const ratingDist = computed(() => {
   const map = {}
   books.forEach((b) => {
     if (b.myRating) map[b.myRating] = (map[b.myRating] || 0) + 1
   })
-  return [5, 4, 3, 2, 1].map((r) => ({ rating: r, n: map[r] || 0 }))
+  const rows = [5, 4, 3, 2, 1].map((r) => ({ label: '★'.repeat(r), n: map[r] || 0 }))
+  if (map[6]) rows.unshift({ label: '👑 推荐', n: map[6] })
+  return rows
 })
 const maxRating = computed(() => Math.max(1, ...ratingDist.value.map((x) => x.n)))
 
@@ -264,6 +270,8 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
           <span v-if="b.aginRead" class="badge mono gold">重读</span>
           <span v-else-if="getBookStatus(b) === 'paused'" class="badge mono paused">搁置</span>
           <span v-else-if="getBookStatus(b) === 'reading'" class="badge mono reading">在读</span>
+          <!-- 推荐：myRating=6，右上角斜丝带，与左上角状态角标互不冲突 -->
+          <span v-if="b.myRating >= 6" class="ribbon mono">推荐</span>
           <!-- hover 明细：每一遍的阅读日期 -->
           <div v-if="roundOf(b)" class="rd-tip mono">
             <p class="rd-head">// 重读记录</p>
@@ -275,8 +283,14 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
           <p class="author">{{ b.author }}</p>
           <div class="rates mono">
             <span class="douban">★ {{ b.doubanRating }}</span>
-            <span class="mine">
+            <span class="mine" v-if="b.myRating && b.myRating < 6">
               <i v-for="n in 5" :key="n" :class="{ on: n <= b.myRating }">★</i>
+            </span>
+            <span class="crown" v-else-if="b.myRating >= 6" title="我的推荐">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2.5 8 8 11.5 12 4.8l4 6.7 5.5-3.5-1.9 9.3H4.4Z" />
+                <rect x="4.6" y="18.6" width="14.8" height="2.2" rx="1.1" />
+              </svg>
             </span>
           </div>
           <div class="bmeta mono">
@@ -335,8 +349,8 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
           <em>平均 {{ stats.avg }} ★</em>
         </div>
         <div class="vrows">
-          <div v-for="r in ratingDist" :key="r.rating" class="vrow">
-            <span class="vlabel mono">{{ '★'.repeat(r.rating) }}</span>
+          <div v-for="r in ratingDist" :key="r.label" class="vrow">
+            <span class="vlabel mono">{{ r.label }}</span>
             <div class="vtrack"><i :style="{ width: (r.n / maxRating) * 100 + '%' }"></i></div>
             <span class="vnum mono">{{ r.n }}</span>
           </div>
@@ -674,6 +688,26 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 .badge.paused { background: color-mix(in srgb, var(--text) 55%, transparent); }
+/* 推荐：右上角斜丝带（45°，两端被封面裁掉），黄绿底白字，扁平无渐变 */
+.ribbon {
+  position: absolute;
+  top: 13px;
+  right: -42px;
+  width: 132px;
+  padding: 3px 0;
+  transform: rotate(45deg);
+  background: #c9cd1f;
+  color: #fff;
+  font-size: 10px;
+  line-height: 1.4;
+  letter-spacing: 3px;
+  text-indent: 3px;
+  text-align: center;
+  white-space: nowrap;
+  z-index: 2;
+  pointer-events: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
+}
 
 /* 重读记录浮层（hover 封面显示） */
 .rd-tip {
@@ -729,6 +763,14 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
 .mine { display: inline-flex; gap: 1px; }
 .mine i { color: var(--line); font-style: normal; font-size: 11px; }
 .mine i.on { color: var(--calligraphy); }
+/* 推荐：皇冠替代五角星 */
+.crown { display: inline-flex; align-items: center; }
+.crown svg {
+  width: 13px;
+  height: 13px;
+  fill: var(--sand);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
+}
 .bmeta {
   display: flex;
   gap: 8px;
