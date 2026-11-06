@@ -57,3 +57,10 @@ excerpt: 全书读完。真正戳到我的是「舒适区边缘」——过去�
 书末提到的「早冥读写跑」，本质上也是同一件事：把宏大的改变，拆成每天可执行的小动作。
 
 顺便说一句，这个站大概就是那张兴趣网的产物——写字写出了作品墙，读《弃长安》留下了一篇笔记，听《道德经》也记了一段。这些没有一件是计划出来的。
+
+<a class="note-card" href="#/posts/renzhijuexing-01">
+  <span class="nc-label">同书笔记 · 情绪力</span>
+  <span class="nc-title">《认知觉醒》读书笔记 · 情绪力</span>
+  <span class="nc-desc">读到「情绪是多角度看问题的智慧」一章很有感触，整理了六个把视角换过来的具体做法。</span>
+  <span class="nc-arrow">→</span>
+</a>

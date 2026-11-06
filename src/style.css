@@ -335,6 +335,59 @@ a { color: inherit; }
   color: var(--text);
 }
 
+/* 相关/同书笔记卡片（文末手写 <a class="note-card" href="#/posts/xxx">） */
+.md-body .note-card {
+  position: relative;
+  display: block;
+  margin: 2.4em 0 1em;
+  padding: 15px 46px 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--primary) 4%, transparent);
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+.md-body .note-card:hover {
+  border-color: color-mix(in srgb, var(--primary) 42%, var(--line));
+  background: color-mix(in srgb, var(--primary) 7%, transparent);
+  transform: translateY(-1px);
+}
+.md-body .note-card .nc-label {
+  display: block;
+  margin-bottom: 7px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--primary);
+}
+.md-body .note-card .nc-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--text);
+}
+.md-body .note-card .nc-desc {
+  display: block;
+  margin-top: 5px;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--muted);
+}
+.md-body .note-card .nc-arrow {
+  position: absolute;
+  top: 50%;
+  right: 17px;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--primary);
+  transition: transform 0.2s ease;
+}
+.md-body .note-card:hover .nc-arrow { transform: translate(3px, -50%); }
+
 /* 图片：习作照片 / 插图 */
 .md-body img {
   display: block;
