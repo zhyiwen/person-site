@@ -688,7 +688,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 .badge.paused { background: color-mix(in srgb, var(--text) 55%, transparent); }
-/* 推荐：右上角斜丝带（45°，两端被封面裁掉），黄绿底白字，扁平无渐变 */
+/* 推荐：右上角斜丝带（45°，两端被封面裁掉），亮金底深棕字，扁平无渐变 */
 .ribbon {
   position: absolute;
   top: 13px;
@@ -696,8 +696,8 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   width: 132px;
   padding: 3px 0;
   transform: rotate(45deg);
-  background: #c9cd1f;
-  color: #fff;
+  background: #f2b52e;
+  color: #4a3200;
   font-size: 10px;
   line-height: 1.4;
   letter-spacing: 3px;
