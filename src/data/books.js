@@ -1521,10 +1521,9 @@ export const books = [
     author: "周岭",
     category: "psychology",
     image: "s34871792",
+    finishDate: "2026-11-06",
     doubanRating: 8.0,
-    myRating: 0,
-    totalPages: 618,
-    currentPage: 445,
+    myRating: 4,
   },
   {
     title: "人生得遇苏东坡",

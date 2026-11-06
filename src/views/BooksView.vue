@@ -296,7 +296,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
             v-if="notesOf(b).length"
             :to="`/posts/${notesOf(b)[0].slug}`"
             class="note-link mono"
-            :title="notesOf(b)[0].title"
+            :title="notesOf(b).map((n) => n.title).join(' / ')"
           >
             ✎ 读后记<template v-if="notesOf(b).length > 1"> ×{{ notesOf(b).length }}</template> →
           </router-link>
