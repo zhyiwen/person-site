@@ -737,7 +737,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   margin-top: 4px;
   flex-wrap: wrap;
 }
-.em-reading { color: var(--green); }
+.em-reading { color: var(--tech); }
 .em-paused { color: var(--faint); }
 .wc { opacity: 0.7; }
 .bar {
@@ -750,7 +750,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
 .bar i {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--green) 55%, #fff), var(--green));
+  background: linear-gradient(90deg, var(--primary), var(--primary-2));
   border-radius: 2px;
 }
 
