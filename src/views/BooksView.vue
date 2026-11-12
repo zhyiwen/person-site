@@ -365,7 +365,6 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
         </div>
       </div>
     </div>
-
     <div v-if="!filtered.length" class="empty mono">// no books matched — 换个关键词试试</div>
 
     <div v-if="hasMore" class="more-wrap">
@@ -500,10 +499,10 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
       </div>
     </section>
   </div>
-</template>
 
-<style scoped>
+</template>
 /* ---------- 统计条 ---------- */
+<style scoped>
 .stats {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -523,7 +522,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
 .stat b { font-size: 22px; line-height: 1.2; }
 .stat span { font-size: 12px; color: var(--faint); }
 .c-reading { color: var(--tech); }
-.c-reread { color: var(--reading); }
+.c-reread { color: var(--reading-text); }
 .c-paused { color: var(--faint); }
 
 /* ---------- 视图切换 ---------- */
@@ -550,11 +549,11 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
 .view-tabs .prompt { color: var(--faint); margin-right: 2px; }
 .view-tabs button:hover { color: var(--text); }
 .view-tabs button.active {
-  color: var(--primary);
+  color: var(--primary-text);
   background: var(--primary-weak);
   box-shadow: var(--glow);
 }
-.view-tabs button.active .prompt { color: var(--primary); }
+.view-tabs button.active .prompt { color: var(--primary-text); }
 
 /* ---------- 统计视图 ---------- */
 .viz {
@@ -569,7 +568,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   align-items: baseline;
   justify-content: space-between;
   font-size: 12px;
-  color: var(--primary);
+  color: var(--primary-text);
   letter-spacing: 1px;
   margin-bottom: 18px;
 }
@@ -677,7 +676,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   font-size: 20px;
   font-weight: 700;
   letter-spacing: 3px;
-  color: var(--primary);
+  color: var(--primary-text);
 }
 .y-pills {
   display: flex;
@@ -700,7 +699,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
 .y-pill.active {
   background: var(--primary-weak);
   border-color: color-mix(in srgb, var(--primary) 45%, transparent);
-  color: var(--primary);
+  color: var(--primary-text);
 }
 
 /* 年度小结行 */
@@ -721,7 +720,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
 .m-name {
   font-size: 16px;
   font-weight: 700;
-  color: var(--primary);
+  color: var(--primary-text);
   letter-spacing: 1px;
 }
 .m-name i {
@@ -782,7 +781,6 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   background: var(--surface);
   color: var(--text);
   font-size: 14px;
-  outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .search::placeholder { color: var(--faint); }
@@ -803,6 +801,13 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   border-radius: 50%;
   font-size: 11px;
   cursor: pointer;
+}
+/* 视觉 22px 不变，命中区扩到 ~42px */
+.s-clear::before {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
 }
 .s-clear:hover { color: var(--primary); }
 
@@ -847,9 +852,9 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
 .f-btn.active {
   background: var(--primary-weak);
   border-color: color-mix(in srgb, var(--primary) 45%, transparent);
-  color: var(--primary);
+  color: var(--primary-text);
 }
-.f-btn.active .cnt { color: var(--primary); }
+.f-btn.active .cnt { color: var(--primary-text); }
 
 /* ---------- 结果 ---------- */
 .result {
@@ -969,10 +974,17 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   pointer-events: none;
 }
 .rd-tip p { margin: 0; }
-.rd-head { color: var(--reading); letter-spacing: 1px; }
+.rd-head { color: var(--reading-text); letter-spacing: 1px; }
 .book-card:hover .rd-tip {
   opacity: 1;
   transform: translateY(0);
+}
+/* 触屏无 hover：重读记录常显（留档核心数据不靠 hover 门控） */
+@media (hover: none) {
+  .rd-tip {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .binfo h3 {
@@ -1000,7 +1012,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   margin-top: 4px;
 }
 /* 豆瓣分用中性色，和「我的评分」的金色星区分开 */
-.douban { color: var(--stone); }
+.douban { color: var(--stone-text); }
 .mine { display: inline-flex; gap: 1px; }
 .mine i { color: var(--line); font-style: normal; font-size: 11px; }
 .mine i.on { color: var(--calligraphy); }
@@ -1045,7 +1057,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   font-size: 11px;
   letter-spacing: 0.5px;
   text-decoration: none;
-  color: var(--reading);
+  color: var(--reading-text);
   border-bottom: 1px dashed color-mix(in srgb, var(--reading) 45%, transparent);
   transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }

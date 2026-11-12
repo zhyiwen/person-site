@@ -54,7 +54,9 @@ function toTag(tag, e) {
   color: var(--faint);
   background: none;
   border: 0;
-  padding: 0;
+  /* 负 margin 抵消 padding，视觉位置不变，命中区扩到 ≥24px */
+  padding: 5px 2px;
+  margin: -5px -2px;
   cursor: pointer;
   transition: color 0.2s ease;
 }
@@ -90,7 +92,7 @@ h3 { font-size: 17px; line-height: 1.55; transition: color 0.2s ease; }
 .rt { font-size: 12px; color: var(--faint); margin-left: auto; }
 .go {
   font-size: 12px;
-  color: var(--primary);
+  color: var(--primary-text);
   font-weight: 600;
   transition: text-shadow 0.25s ease, letter-spacing 0.25s ease;
 }

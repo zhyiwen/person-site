@@ -115,10 +115,10 @@ function clearTag() {
 .f-btn.active {
   background: var(--primary-weak);
   border-color: var(--primary);
-  color: var(--primary);
+  color: var(--primary-text);
   box-shadow: var(--glow);
 }
-.f-btn.active .prompt { color: var(--primary); }
+.f-btn.active .prompt { color: var(--primary-text); }
 
 /* 标签条 */
 .tag-bar {
@@ -135,7 +135,7 @@ function clearTag() {
   gap: 6px;
   padding: 4px 10px;
   border-radius: 999px;
-  color: var(--primary);
+  color: var(--primary-text);
   background: var(--primary-weak);
   border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
 }
@@ -150,7 +150,9 @@ function clearTag() {
   font-size: 12px;
   background: none;
   border: 0;
-  padding: 2px 0;
+  /* 命中区扩到 ≥24px，视觉位置不变 */
+  padding: 8px 4px;
+  margin: -6px -2px;
   color: var(--faint);
   cursor: pointer;
   transition: color 0.2s ease;
@@ -170,7 +172,7 @@ function clearTag() {
   box-shadow: none;
 }
 .empty:hover { transform: none; box-shadow: none; }
-.empty-line { font-size: 13px; color: var(--primary); margin-bottom: 8px; }
+.empty-line { font-size: 13px; color: var(--primary-text); margin-bottom: 8px; }
 .empty-hint { font-size: 14px; color: var(--muted); }
 
 @media (max-width: 860px) {

@@ -133,7 +133,7 @@ import { QUOTES } from '../data/quotes'
   font-family: var(--mono);
   font-size: 13px;
   font-weight: 500;
-  color: var(--primary);
+  color: var(--primary-text);
 }
 .count { font-size: 12px; color: var(--faint); letter-spacing: 1px; }
 

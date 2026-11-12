@@ -142,6 +142,13 @@ watch(active, (v) => {
   opacity: 1;
   transform: translateY(0);
 }
+/* 触屏无 hover：放大提示常显（核心入口不靠 hover 门控） */
+@media (hover: none) {
+  .zoom {
+    opacity: 1;
+    transform: none;
+  }
+}
 
 figcaption {
   padding: 12px 6px 4px;

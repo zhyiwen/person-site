@@ -56,10 +56,6 @@ const toTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
   box-shadow: var(--shadow-md);
 }
 .btt:active { transform: translateY(-1px); }
-.btt:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--primary) 55%, transparent);
-  outline-offset: 2px;
-}
 .btt svg { width: 18px; height: 18px; fill: currentColor; }
 
 .btt-enter-active,

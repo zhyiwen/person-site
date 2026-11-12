@@ -13,6 +13,12 @@ const q = ref('')
 const cursor = ref(0)
 const inputEl = ref(null)
 const listEl = ref(null)
+const panelEl = ref(null)
+const triggerEl = ref(null)
+
+/** Windows / Linux 上 ⌘K 实为 Ctrl+K，提示文案跟平台走 */
+const isApple = /Mac|iPhone|iPad/i.test(navigator.platform || navigator.userAgent)
+const metaLabel = isApple ? '⌘K' : 'Ctrl K'
 
 /** 索引只建一次，首次打开时构建（157 条，同步构建也很快） */
 let index = null
@@ -100,6 +106,8 @@ function show() {
 function hide() {
   open.value = false
   reset()
+  // 焦点还给触发按钮，键盘用户不被丢在原地
+  nextTick(() => triggerEl.value?.focus())
 }
 
 function go(item) {
@@ -136,7 +144,16 @@ function onKeydown(e) {
   }
   if (!open.value) return
   if (e.key === 'Escape') hide()
-  else if (e.key === 'ArrowDown') {
+  else if (e.key === 'Tab') {
+    // 焦点圈禁：Tab 在弹层内循环，不跑到被锁住的背景里
+    const focusables = panelEl.value?.querySelectorAll('input, button')
+    if (!focusables?.length) return
+    e.preventDefault()
+    const list = Array.from(focusables).filter((el) => !el.disabled)
+    const i = list.indexOf(document.activeElement)
+    const next = e.shiftKey ? (i <= 0 ? list.length - 1 : i - 1) : (i === list.length - 1 ? 0 : i + 1)
+    list[next]?.focus()
+  } else if (e.key === 'ArrowDown') {
     e.preventDefault()
     move(1)
   } else if (e.key === 'ArrowUp') {
@@ -184,18 +201,18 @@ function highlight(text) {
 </script>
 
 <template>
-  <button class="trigger mono" type="button" aria-label="搜索" @click="show">
+  <button ref="triggerEl" class="trigger mono" type="button" aria-label="搜索" @click="show">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
       <circle cx="11" cy="11" r="7" />
       <path d="M20 20l-3.5-3.5" />
     </svg>
-    <kbd>⌘K</kbd>
+    <kbd>{{ metaLabel }}</kbd>
   </button>
 
   <Teleport to="body">
     <transition name="gs">
       <div v-if="open" class="gs-mask" @click.self="hide">
-        <div class="gs-panel" role="dialog" aria-label="全站搜索">
+        <div ref="panelEl" class="gs-panel" role="dialog" aria-modal="true" aria-label="全站搜索">
           <div class="gs-head">
             <span class="gs-prompt mono">$</span>
             <input
@@ -233,7 +250,7 @@ function highlight(text) {
           </div>
 
           <div v-else class="gs-tips mono">
-            <p><b>⌘K</b> 唤醒 · <b>↑↓</b> 选择 · <b>↵</b> 打开</p>
+            <p><b>{{ metaLabel }}</b> 唤醒 · <b>↑↓</b> 选择 · <b>↵</b> 打开</p>
             <p class="dim">可搜：文章正文 / 书名与作者 / 习作标题 / 喜欢的句子</p>
           </div>
 
@@ -302,12 +319,11 @@ function highlight(text) {
   padding: 16px 18px;
   border-bottom: 1px solid var(--line);
 }
-.gs-prompt { color: var(--primary); font-size: 15px; }
+.gs-prompt { color: var(--primary-text); font-size: 15px; }
 .gs-input {
   flex: 1;
   background: none;
   border: 0;
-  outline: none;
   color: var(--text);
   font-size: 15px;
 }
@@ -337,7 +353,7 @@ function highlight(text) {
 .gs-icon {
   width: 22px;
   text-align: center;
-  color: var(--primary);
+  color: var(--primary-text);
   font-size: 13px;
   flex: none;
 }
@@ -365,7 +381,7 @@ function highlight(text) {
   opacity: 0;
   transition: opacity 0.15s ease;
 }
-.gs-item.on .gs-enter { opacity: 1; color: var(--primary); }
+.gs-item.on .gs-enter { opacity: 1; color: var(--primary-text); }
 
 .gs-tips {
   padding: 20px 18px 22px;
@@ -373,7 +389,7 @@ function highlight(text) {
   color: var(--muted);
   line-height: 2;
 }
-.gs-tips b { color: var(--primary); font-weight: 600; }
+.gs-tips b { color: var(--primary-text); font-weight: 600; }
 .gs-tips .dim { color: var(--faint); }
 
 .gs-empty {
@@ -393,7 +409,7 @@ function highlight(text) {
 /* 命中高亮 */
 :deep(mark) {
   background: color-mix(in srgb, var(--primary) 22%, transparent);
-  color: var(--primary);
+  color: var(--primary-text);
   border-radius: 3px;
   padding: 0 1px;
 }

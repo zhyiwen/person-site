@@ -108,7 +108,7 @@ const mobileOpen = ref(false)
 }
 .brand-text { font-size: 15px; letter-spacing: 0.5px; }
 .cursor-blink {
-  color: var(--primary);
+  color: var(--primary-text);
   animation: blink 1.1s steps(1) infinite;
   margin-left: 1px;
 }
@@ -133,7 +133,7 @@ const mobileOpen = ref(false)
 }
 .link:hover { color: var(--text); background: var(--surface-2); }
 .link.router-link-active {
-  color: var(--primary);
+  color: var(--primary-text);
   background: var(--primary-weak);
 }
 .link.router-link-active .cmd { color: var(--primary-2); }
@@ -157,9 +157,9 @@ const mobileOpen = ref(false)
   flex-direction: column;
   justify-content: center;
   gap: 5px;
-  width: 38px;
-  height: 38px;
-  padding: 8px;
+  width: 44px;
+  height: 44px;
+  padding: 11px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;

@@ -199,7 +199,7 @@ onUnmounted(() => {
 .toc-item.lv3 { padding-left: 10px; font-size: 11px; opacity: 0.85; }
 .toc-item:hover { color: var(--text); }
 .toc-item.on {
-  color: var(--primary);
+  color: var(--primary-text);
   padding-left: 4px;
 }
 /* 当前小节左侧亮条，压在 .toc 的边框位置 */
@@ -277,7 +277,7 @@ h1 {
 .nb:hover .nb-title { color: var(--primary); }
 
 .notfound { text-align: center; padding: 80px 0; color: var(--muted); }
-.notfound a { color: var(--primary); }
+.notfound a { color: var(--primary-text); }
 
 @media (max-width: 720px) {
   .doc { padding: 28px 22px; }

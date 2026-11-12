@@ -9,15 +9,22 @@
   --surface-2: #e9eef5;
   --text: #101c2e;
   --muted: #5b6b80;
-  --faint: #93a1b3;
+  /* 小字号元数据色：原 #93a1b3 对白底仅 2.63:1，提到 4.5:1 以上 */
+  --faint: #5f6c7b;
   --line: #dbe3ed;
   --grid: rgba(16, 28, 46, 0.055);
   --primary: #06a6d6;
+  /* 用于小字号文字的 primary 加深档（#06a6d6 对白底 2.82:1 不达标）；图形/边框仍用 --primary */
+  --primary-text: #05719a;
   --primary-2: #7c5cff;
   --primary-weak: rgba(6, 166, 214, 0.1);
   --tech: #06a6d6;
   --reading: #7c5cff;
   --calligraphy: #d97a1f;
+  /* 语义色小字加深档：紫 #7c5cff 芯片底 3.72:1、橙 #d97a1f 2.74:1、石灰 #7d8fa3 3.32:1，均不达 AA */
+  --reading-text: #6a4ae0;
+  --calligraphy-text: #9c5109;
+  --stone-text: #647084;
   --green: #07c160;
   /* 辅助色：沙金（豆瓣分/太阳图标）· 石灰（月亮图标等次要图形） */
   --sand: #c0801c;
@@ -36,15 +43,19 @@ html[data-theme='dark'] {
   --surface-2: #16202e;
   --text: #dde7f2;
   --muted: #8798ad;
-  --faint: #5a6b80;
+  --faint: #74889e;
   --line: #1c2836;
   --grid: rgba(43, 217, 255, 0.05);
   --primary: #2bd9ff;
+  --primary-text: #2bd9ff;
   --primary-2: #8b7bff;
   --primary-weak: rgba(43, 217, 255, 0.1);
   --tech: #2bd9ff;
   --reading: #8b7bff;
   --calligraphy: #ffb454;
+  --reading-text: #8b7bff;
+  --calligraphy-text: #ffb454;
+  --stone-text: #93a6bd;
   --green: #12c96a;
   --sand: #ffc266;
   --stone: #93a6bd;
@@ -123,7 +134,7 @@ a { color: inherit; }
 .page-head h1 .mono-tag {
   font-family: var(--mono);
   font-size: 14px;
-  color: var(--primary);
+  color: var(--primary-text);
   font-weight: 500;
 }
 .page-head .sub {
@@ -220,17 +231,17 @@ a { color: inherit; }
   border: 1px solid transparent;
 }
 .chip-tech {
-  color: var(--tech);
+  color: var(--primary-text);
   background: color-mix(in srgb, var(--tech) 12%, transparent);
   border-color: color-mix(in srgb, var(--tech) 30%, transparent);
 }
 .chip-reading {
-  color: var(--reading);
+  color: var(--reading-text);
   background: color-mix(in srgb, var(--reading) 12%, transparent);
   border-color: color-mix(in srgb, var(--reading) 30%, transparent);
 }
 .chip-calligraphy {
-  color: var(--calligraphy);
+  color: var(--calligraphy-text);
   background: color-mix(in srgb, var(--calligraphy) 12%, transparent);
   border-color: color-mix(in srgb, var(--calligraphy) 30%, transparent);
 }
@@ -262,15 +273,15 @@ a { color: inherit; }
 .md-body h3 { font-size: 18px; color: var(--text); }
 .md-body h3::before {
   content: '▸ ';
-  color: var(--primary);
+  color: var(--primary-text);
   font-size: 15px;
 }
 .md-body p { margin-bottom: 1.1em; }
 .md-body strong { color: var(--text); font-weight: 700; }
-.md-body em { color: var(--primary-2); font-style: normal; }
+.md-body em { color: var(--reading-text); font-style: normal; }
 
 .md-body a {
-  color: var(--primary);
+  color: var(--primary-text);
   text-decoration: none;
   border-bottom: 1px dashed color-mix(in srgb, var(--primary) 50%, transparent);
   transition: border-color 0.2s ease;
@@ -280,7 +291,7 @@ a { color: inherit; }
 .md-body ul,
 .md-body ol { margin: 0 0 1.1em 1.4em; }
 .md-body li { margin-bottom: 0.4em; }
-.md-body li::marker { color: var(--primary); }
+.md-body li::marker { color: var(--primary-text); }
 
 .md-body blockquote {
   margin: 1.4em 0;
@@ -309,7 +320,7 @@ a { color: inherit; }
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 2px;
-  color: var(--primary);
+  color: var(--primary-text);
 }
 .md-body .thought p {
   margin: 0;
@@ -330,7 +341,7 @@ a { color: inherit; }
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 2px;
-  color: var(--calligraphy);
+  color: var(--calligraphy-text);
 }
 .md-body .action p:last-child {
   margin: 0;
@@ -362,7 +373,7 @@ a { color: inherit; }
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 2px;
-  color: var(--primary);
+  color: var(--primary-text);
 }
 .md-body .note-card .nc-title {
   display: block;
@@ -385,7 +396,7 @@ a { color: inherit; }
   transform: translateY(-50%);
   font-family: var(--mono);
   font-size: 15px;
-  color: var(--primary);
+  color: var(--primary-text);
   transition: transform 0.2s ease;
 }
 .md-body .note-card:hover .nc-arrow { transform: translate(3px, -50%); }
@@ -429,7 +440,7 @@ a { color: inherit; }
   padding: 2px 6px;
   border-radius: 5px;
   background: var(--surface-2);
-  color: var(--primary);
+  color: var(--primary-text);
   border: 1px solid var(--line);
 }
 /* 代码块 */
@@ -504,9 +515,26 @@ html[data-theme='dark'] .md-body pre.shiki span {
   border-top: 1px dashed var(--line);
   margin: 2em 0;
 }
-.md-body img {
-  max-width: 100%;
-  border-radius: 10px;
-  box-shadow: var(--shadow-md);
+
+
+/* ---- 键盘焦点可见性（全局兜底） ---- */
+:focus-visible {
+  /* 焦点环用文字加深档：60% 透明的亮青在浅色底上仅 1.80:1，不达 WCAG 1.4.11 的 3:1 */
+  outline: 2px solid var(--primary-text);
+  outline-offset: 2px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
 }
 
+/* ---- 动效礼仪：reduced-motion 下保留状态变化与层级，去掉位移 / 闪烁 / 循环 ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

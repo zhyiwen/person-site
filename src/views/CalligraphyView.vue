@@ -64,8 +64,9 @@ const previewLimit = computed(() => (overflow.value ? FULL_SHOW : 0))
         </p>
       </div>
 
-      <router-link v-if="overflow" to="/works" class="wall-more mono">
-        全部 {{ works.length }} 张作品 →
+      <!-- 入口常在：不收起时也不让 /works 变成无 UI 入口的幽灵页 -->
+      <router-link v-if="works.length" to="/works" class="wall-more mono">
+        {{ overflow ? `全部 ${works.length} 张作品 →` : '作品全集 →' }}
       </router-link>
     </section>
 
@@ -155,7 +156,7 @@ const previewLimit = computed(() => (overflow.value ? FULL_SHOW : 0))
   font-size: 12px;
   letter-spacing: 1px;
   text-decoration: none;
-  color: var(--primary);
+  color: var(--primary-text);
   border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--line));
   border-radius: 999px;
   background: color-mix(in srgb, var(--primary) 7%, transparent);
@@ -183,7 +184,7 @@ const previewLimit = computed(() => (overflow.value ? FULL_SHOW : 0))
   height: 34px;
   border-radius: 50%;
   border: 1px dashed color-mix(in srgb, var(--primary) 40%, var(--line));
-  color: var(--primary);
+  color: var(--primary-text);
   font-size: 18px;
   margin-bottom: 12px;
 }
@@ -196,7 +197,7 @@ code {
   font-size: 12px;
   padding: 1px 5px;
   border-radius: 4px;
-  color: var(--primary);
+  color: var(--primary-text);
   background: color-mix(in srgb, var(--primary) 10%, transparent);
 }
 
@@ -214,7 +215,7 @@ code {
   border-style: dashed;
 }
 .empty:hover { transform: none; box-shadow: none; }
-.empty-line { font-size: 13px; color: var(--primary); margin-bottom: 8px; }
+.empty-line { font-size: 13px; color: var(--primary-text); margin-bottom: 8px; }
 .empty-hint { font-size: 14px; color: var(--muted); }
 
 @media (max-width: 860px) {

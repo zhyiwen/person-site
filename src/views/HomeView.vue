@@ -117,7 +117,7 @@ const termLines = [
 }
 .badge {
   display: inline-block;
-  color: var(--primary);
+  color: var(--primary-text);
   font-size: 13px;
   padding: 5px 14px;
   border-radius: 8px;
@@ -182,8 +182,8 @@ h1 .dim {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
+  background: var(--green);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--green) 80%, transparent);
   animation: pulse 2s ease infinite;
 }
 @keyframes pulse {
@@ -226,9 +226,9 @@ h1 .dim {
   margin-bottom: 20px;
 }
 .sec-head h2 { font-size: 22px; letter-spacing: 1px; display: flex; gap: 12px; align-items: baseline; }
-.mono-tag { color: var(--primary); font-size: 14px; font-weight: 600; }
+.mono-tag { color: var(--primary-text); font-size: 14px; font-weight: 600; }
 .more {
-  color: var(--primary);
+  color: var(--primary-text);
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;
@@ -247,7 +247,7 @@ h1 .dim {
   box-shadow: none;
 }
 .empty:hover { transform: none; box-shadow: none; }
-.empty-line { font-size: 13px; color: var(--primary); margin-bottom: 8px; }
+.empty-line { font-size: 13px; color: var(--primary-text); margin-bottom: 8px; }
 .empty-hint { font-size: 14px; color: var(--muted); }
 
 /* ---------- 模块入口 ---------- */

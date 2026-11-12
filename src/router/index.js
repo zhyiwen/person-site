@@ -7,6 +7,7 @@ import BooksView from '../views/BooksView.vue'
 import CalligraphyView from '../views/CalligraphyView.vue'
 import WorksView from '../views/WorksView.vue'
 import AboutView from '../views/AboutView.vue'
+import NotFoundView from '../views/NotFoundView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -18,7 +19,8 @@ const router = createRouter({
     { path: '/calligraphy', name: 'calligraphy', component: CalligraphyView, meta: { title: '习字' } },
     { path: '/works', name: 'works', component: WorksView, meta: { title: '作品' } },
     { path: '/about', name: 'about', component: AboutView, meta: { title: '关于' } },
-    { path: '/:pathMatch(.*)*', redirect: '/' },
+    // 未知路径不再静默跳首页：给 404 兜底页，保住上下文和「返回」入口
+    { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView, meta: { title: '404' } },
   ],
   scrollBehavior() {
     return { top: 0 }
