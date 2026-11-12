@@ -93,6 +93,51 @@ const yearStats = computed(() => {
 })
 const maxYear = computed(() => Math.max(1, ...yearStats.value.map((x) => x.n)))
 
+/* ---------- 阅读回顾（按年/月） ---------- */
+/** 阅读事件：重读书取 readDates 每一遍，普通书取 finishDate；在读/搁置无完成日期，不参与 */
+const readEvents = computed(() => {
+  const evts = []
+  books.forEach((b) => {
+    if (b.paused) return
+    const dates = b.readDates && b.readDates.length ? b.readDates : b.finishDate ? [b.finishDate] : []
+    dates.forEach((d, i) => evts.push({ book: b, date: d, round: dates.length > 1 ? i + 1 : 0 }))
+  })
+  return evts
+})
+
+const reviewYears = computed(() => [...new Set(readEvents.value.map((e) => e.date.slice(0, 4)))].sort())
+const reviewYear = ref(reviewYears.value[reviewYears.value.length - 1])
+
+const shiftYear = (n) => {
+  const i = reviewYears.value.indexOf(reviewYear.value)
+  const j = Math.min(reviewYears.value.length - 1, Math.max(0, i + n))
+  reviewYear.value = reviewYears.value[j]
+}
+
+/** 从统计图跳过来：直达某年回顾 */
+const goReview = (y) => {
+  reviewYear.value = y
+  view.value = 'review'
+}
+
+/** 该年全部阅读事件（时间正序） */
+const yearEvents = computed(() =>
+  readEvents.value.filter((e) => e.date.startsWith(reviewYear.value)).sort((a, b) => a.date.localeCompare(b.date)),
+)
+
+/** 按月分组：[{ month, events }]，只含有书的月份，时间正序 */
+const monthGroups = computed(() => {
+  const map = new Map()
+  yearEvents.value.forEach((e) => {
+    const m = Number(e.date.slice(5, 7))
+    if (!map.has(m)) map.set(m, [])
+    map.get(m).push(e)
+  })
+  return [...map.keys()]
+    .sort((a, b) => a - b)
+    .map((m) => ({ month: m, events: map.get(m) }))
+})
+
 /** 我的评分分布（myRating=6 是「推荐」，单独一行排在最上面） */
 const ratingDist = computed(() => {
   const map = {}
@@ -192,6 +237,9 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
       </button>
       <button :class="{ active: view === 'stats' }" @click="view = 'stats'">
         <span class="prompt">›</span> 统计
+      </button>
+      <button :class="{ active: view === 'review' }" @click="view = 'review'">
+        <span class="prompt">›</span> 回顾
       </button>
     </div>
 
@@ -327,6 +375,86 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
     </div>
     </template>
 
+    <!-- 阅读回顾视图 -->
+    <section v-else-if="view === 'review'" class="review" v-reveal>
+      <!-- 年份选择器：左右切换 + 年份胶囊 -->
+      <div class="year-nav card mono">
+        <button
+          class="y-arrow"
+          :disabled="reviewYear === reviewYears[0]"
+          title="上一年"
+          @click="shiftYear(-1)"
+        >‹</button>
+        <span class="y-cur">{{ reviewYear }}</span>
+        <button
+          class="y-arrow"
+          :disabled="reviewYear === reviewYears[reviewYears.length - 1]"
+          title="下一年"
+          @click="shiftYear(1)"
+        >›</button>
+        <div class="y-pills">
+          <button
+            v-for="y in reviewYears"
+            :key="y"
+            class="y-pill"
+            :class="{ active: y === reviewYear }"
+            @click="reviewYear = y; reviewMonth = 0"
+          >{{ y }}</button>
+        </div>
+      </div>
+
+      <!-- 按月分节，时间正序一路排下去 -->
+      <Transition name="rv" mode="out-in">
+        <div :key="reviewYear">
+          <p class="r-sum mono">// {{ reviewYear }} 年共读完 {{ yearEvents.length }} 本</p>
+
+          <template v-if="monthGroups.length">
+            <section v-for="g in monthGroups" :key="g.month" class="m-group">
+              <div class="m-head mono">
+                <span class="m-name">{{ g.month }}<i>月</i></span>
+                <span class="m-line"></span>
+                <span class="m-count">{{ g.events.length }} 本</span>
+              </div>
+              <div class="shelf review-shelf">
+                <div v-for="e in g.events" :key="`${e.book.title}-${e.date}`" class="book-card">
+                  <div class="cover">
+                    <img
+                      :src="`/covers/${e.book.image}.jpg`"
+                      :alt="e.book.title"
+                      loading="lazy"
+                      @error="(ev) => ev.target.closest('.cover').classList.add('no-img')"
+                    />
+                    <span v-if="e.round" class="badge mono gold">第{{ e.round }}遍</span>
+                    <span v-if="e.book.myRating >= 6" class="ribbon mono">推荐</span>
+                  </div>
+                  <div class="binfo">
+                    <h3 :title="e.book.title">{{ e.book.title }}</h3>
+                    <p class="author">{{ e.book.author }}</p>
+                    <div class="rates mono">
+                      <span class="douban">★ {{ e.book.doubanRating }}</span>
+                      <span class="mine" v-if="e.book.myRating && e.book.myRating < 6">
+                        <i v-for="n in 5" :key="n" :class="{ on: n <= e.book.myRating }">★</i>
+                      </span>
+                    </div>
+                    <div class="bmeta mono">
+                      <span>{{ e.date }}</span>
+                    </div>
+                    <router-link
+                      v-if="noteMap[e.book.title]"
+                      :to="`/posts/${notesOf(e.book)[0].slug}`"
+                      class="note-link mono"
+                    >✎ 读后记 →</router-link>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </template>
+
+          <div v-else class="empty mono">// {{ reviewYear }} 年没有读完的书</div>
+        </div>
+      </Transition>
+    </section>
+
     <!-- 统计视图 -->
     <section v-else class="viz" v-reveal>
       <div class="viz-card card">
@@ -335,7 +463,7 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
           <em>{{ yearStats.length }} 年 · 共 {{ stats.finished }} 本</em>
         </div>
         <div class="cols">
-          <div v-for="y in yearStats" :key="y.year" class="col">
+          <div v-for="y in yearStats" :key="y.year" class="col" :title="`查看 ${y.year} 年回顾`" @click="goReview(y.year)">
             <span class="cnum mono">{{ y.n }}</span>
             <div class="cbar" :style="{ height: (y.n / maxYear) * 78 + '%' }"></div>
             <span class="cyear mono">{{ y.year }}</span>
@@ -464,7 +592,10 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   align-items: center;
   gap: 6px;
   min-width: 0;
+  cursor: pointer;
 }
+.col:hover .cbar { filter: brightness(1.25); }
+.col:hover .cyear { color: var(--primary); }
 .cnum { font-size: 11px; color: var(--muted); }
 .cbar {
   width: 100%;
@@ -510,6 +641,116 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
   background: linear-gradient(90deg, var(--tech), color-mix(in srgb, var(--tech) 40%, transparent));
 }
 .vnum { font-size: 11px; color: var(--faint); text-align: right; }
+
+/* ---------- 阅读回顾 ---------- */
+.year-nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+.year-nav:hover { transform: none; }
+.y-arrow {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+.y-arrow:hover:not(:disabled) {
+  color: var(--primary);
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--line));
+  background: var(--primary-weak);
+}
+.y-arrow:disabled { opacity: 0.3; cursor: default; }
+.y-cur {
+  min-width: 68px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--primary);
+}
+.y-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-left: auto;
+}
+.y-pill {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.y-pill:hover { background: var(--surface-2); color: var(--text); }
+.y-pill.active {
+  background: var(--primary-weak);
+  border-color: color-mix(in srgb, var(--primary) 45%, transparent);
+  color: var(--primary);
+}
+
+/* 年度小结行 */
+.r-sum {
+  font-size: 12px;
+  color: var(--faint);
+  margin-bottom: 20px;
+}
+
+/* 月份小节 */
+.m-group { margin-bottom: 34px; }
+.m-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.m-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 1px;
+}
+.m-name i {
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--faint);
+  margin-left: 1px;
+}
+.m-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 30%, transparent), var(--line));
+}
+.m-count { font-size: 11px; color: var(--faint); }
+
+/* 年切换动画 */
+.rv-enter-active,
+.rv-leave-active {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.rv-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.rv-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
 
 @media (max-width: 860px) {
   .viz { grid-template-columns: 1fr; }

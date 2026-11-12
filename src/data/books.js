@@ -1423,7 +1423,7 @@ export const books = [
     myRating: 4,
     paused: false,
     totalPages: 5584,
-    currentPage: 1261,
+    currentPage: 1370,
   },
   {
     title: "不要担心2小时和8公里以外的事情",
@@ -1530,10 +1530,9 @@ export const books = [
     author: "意公子",
     category: "history",
     image: "s35057270",
-    doubanRating: 7.7,
-    myRating: 5,
-    totalPages: 405,
-    currentPage: 370,
+    finishDate: "2026-11-10",
+    doubanRating: 7.6,
+    myRating: 4,
   },
   {
     title: "飞刀",
