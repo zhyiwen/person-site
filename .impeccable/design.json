@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-12T14:30:00+08:00",
+  "title": "Design System: 译文 · 个人站",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "信号青 / 霓虹青", "canonical": "#06a6d6", "dark": "#2bd9ff", "tonalRamp": ["#023b4e", "#05536d", "#066b8c", "#0682ab", "#06a6d6", "#2ec0e8", "#74d6f0", "#b8ebf9"] },
+      "primary-2": { "role": "primary", "displayName": "电光紫", "canonical": "#7c5cff", "dark": "#8b7bff", "tonalRamp": ["#1f1654", "#2c1f76", "#3b2a99", "#4c36bd", "#7c5cff", "#9d80ff", "#bda6ff", "#ded1ff"] },
+      "calligraphy": { "role": "tertiary", "displayName": "琥珀橙", "canonical": "#d97a1f", "dark": "#ffb454", "tonalRamp": ["#4a2a0a", "#663a0e", "#824a13", "#a05a17", "#d97a1f", "#e89645", "#f2b578", "#fad6ae"] },
+      "green": { "role": "secondary", "displayName": "常驻绿", "canonical": "#07c160", "dark": "#12c96a", "tonalRamp": ["#034d26", "#046634", "#057f41", "#06984f", "#07c160", "#2fd481", "#71e3a7", "#b5f1cf"] },
+      "sand": { "role": "secondary", "displayName": "沙金", "canonical": "#c0801c", "dark": "#ffc266", "tonalRamp": ["#4a3208", "#66460c", "#825a11", "#9e6e15", "#c0801c", "#d1973d", "#e2b269", "#f2d3a0"] },
+      "stone": { "role": "secondary", "displayName": "石灰蓝", "canonical": "#7d8fa3", "dark": "#93a6bd", "tonalRamp": ["#2b333d", "#3a4553", "#4a5868", "#5c6c7e", "#7d8fa3", "#96a5b6", "#b1bccb", "#cdd5df"] },
+      "seal-paper": { "role": "neutral", "displayName": "印章纸色", "canonical": "#f6f3ec", "tonalRamp": ["#c9bfa8", "#d5ccba", "#e0d8cb", "#eae4db", "#f6f3ec", "#f8f5ef", "#faf8f3", "#fdfcf9"] },
+      "term-red": { "role": "secondary", "displayName": "终端红点", "canonical": "#ff5f57", "tonalRamp": ["#4a1a17", "#662420", "#822e29", "#9e3832", "#ff5f57", "#ff807a", "#ffa69f", "#ffcdc8"] },
+      "term-yellow": { "role": "secondary", "displayName": "终端黄点", "canonical": "#febc2e", "tonalRamp": ["#4a3808", "#664e0c", "#826511", "#9e7c15", "#febc2e", "#ffcd57", "#ffde85", "#ffefb5"] },
+      "term-green": { "role": "secondary", "displayName": "终端绿点", "canonical": "#28c840", "tonalRamp": ["#0a4a14", "#0e631b", "#127c22", "#16952a", "#28c840", "#56d56b", "#8ae3a0", "#bdf1d1"] },
+      "bg": { "role": "neutral", "displayName": "底色", "canonical": "#f3f6fa", "dark": "#0a0f16", "tonalRamp": ["#0a0f16", "#121a26", "#1b2635", "#263344", "#43536a", "#7c8ca3", "#c2ccd9", "#f3f6fa"] },
+      "surface": { "role": "neutral", "displayName": "表面", "canonical": "#ffffff", "dark": "#0f1620", "tonalRamp": ["#0f1620", "#16202e", "#1d2a3b", "#243448", "#3c5068", "#8595ab", "#c9d3df", "#ffffff"] },
+      "text": { "role": "neutral", "displayName": "正文墨", "canonical": "#101c2e", "dark": "#dde7f2", "tonalRamp": ["#101c2e", "#1c2a3e", "#2a3a50", "#3a4c64", "#5b6b80", "#8798ad", "#b3c1d0", "#dde7f2"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "仅首页 Hero 主标题；可套青→紫渐变文字。" },
+      "headline": { "displayName": "Headline", "purpose": "各页面标题，前置 mono 命令标签。" },
+      "title": { "displayName": "Title", "purpose": "正文 h2（4px 青色左边线）与 h3（▸ 前缀）。" },
+      "body": { "displayName": "Body", "purpose": "全局正文 1.7；文章正文 .md-body 放宽至 1.85。" },
+      "label": { "displayName": "Mono Label", "purpose": "命令、编号、出处、图注等仪器读数；meta 档全阶：54/32/24/23/20/18/17/15/14/13/13.5/11/10px；小标签 letter-spacing 2px。" },
+      "quote": { "displayName": "Quote（宋体第三声部）", "purpose": "语录、座右铭等仪式性引文专属；正文与标题不得使用衬线。" }
+    },
+    "shadows": [
+      { "name": "shadow-sm", "value": "0 1px 2px rgba(16, 28, 46, 0.05), 0 2px 8px rgba(16, 28, 46, 0.05)", "purpose": "卡片默认态。" },
+      { "name": "shadow-md", "value": "0 2px 6px rgba(16, 28, 46, 0.06), 0 12px 32px rgba(16, 28, 46, 0.1)", "purpose": "hover 升起与弹层。" },
+      { "name": "shadow-lg", "value": "0 4px 12px rgba(16, 28, 46, 0.1), 0 24px 56px rgba(16, 28, 46, 0.18)", "purpose": "模态与移动端菜单。" },
+      { "name": "glow", "value": "0 8px 28px rgba(6, 166, 214, 0.18)", "purpose": "主按钮常态、卡片 hover 通电感（深色下换 0 0 32px rgba(43,217,255,.16)）。" }
+    ],
+    "motion": [
+      { "name": "reveal", "value": "opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "滚动浮现（v-reveal），初始 translateY(24px)。" },
+      { "name": "hover-lift", "value": "transform 0.25s ease, box-shadow 0.25s ease", "purpose": "卡片 hover 上浮 -4px + 辉光点亮。" },
+      { "name": "route-fade", "value": "opacity 0.28s ease, transform 0.28s ease", "purpose": "路由切换：进场 +14px，离场 -8px。" },
+      { "name": "cursor-blink", "value": "1.1s steps(1) infinite", "purpose": "品牌与终端窗口的光标闪烁（50% 透明）。" }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "720px", "purpose": "全站统一移动临界：汉堡菜单、单列、隐藏命令前缀。" },
+      { "name": "md", "value": "860px", "purpose": "网格列数切换点（文章/书单/习字）。" },
+      { "name": "hero", "value": "900px", "purpose": "首页 Hero 双栏转单列，h1 42px→32px。" },
+      { "name": "xl", "value": "1180px", "purpose": "文章详情页可浮出侧栏（min-width）。" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Card（取景框角标）",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "全站签名容器：默认安静，hover 上浮并点亮青紫取景框角标与辉光。",
+      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">卡片标题</h3><p class=\"ds-card-body\">hover 时上浮，左上青、右下紫的取景框角标亮起。</p></div>",
+      "css": ".ds-card { position: relative; background: var(--surface, #fff); border: 1px solid var(--line, #dbe3ed); border-radius: 14px; box-shadow: 0 1px 2px rgba(16,28,46,.05), 0 2px 8px rgba(16,28,46,.05); padding: 28px 32px; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }\n.ds-card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--primary, #06a6d6) 45%, var(--line, #dbe3ed)); box-shadow: 0 2px 6px rgba(16,28,46,.06), 0 12px 32px rgba(16,28,46,.1), 0 8px 28px rgba(6,166,214,.18); }\n.ds-card::before, .ds-card::after { content: ''; position: absolute; width: 16px; height: 16px; opacity: 0; transition: opacity .25s ease; pointer-events: none; }\n.ds-card::before { top: -1px; left: -1px; border-top: 2px solid var(--primary, #06a6d6); border-left: 2px solid var(--primary, #06a6d6); border-top-left-radius: 14px; }\n.ds-card::after { bottom: -1px; right: -1px; border-bottom: 2px solid var(--primary-2, #7c5cff); border-right: 2px solid var(--primary-2, #7c5cff); border-bottom-right-radius: 14px; }\n.ds-card:hover::before, .ds-card:hover::after { opacity: 1; }\n.ds-card-title { margin: 0 0 10px; font-size: 18px; font-weight: 700; color: var(--text, #101c2e); }\n.ds-card-body { margin: 0; font-size: 14px; line-height: 1.7; color: var(--muted, #5b6b80); }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "信号青主按钮，文案是终端命令，常态带辉光，hover 上浮。",
+      "html": "<button class=\"ds-btn-primary\">ls ./articles →</button>",
+      "css": ".ds-btn-primary { font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 14px; font-weight: 600; padding: 11px 24px; border: none; border-radius: 10px; cursor: pointer; background: var(--primary, #06a6d6); color: #041018; box-shadow: 0 8px 28px rgba(6,166,214,.18); transition: transform .2s ease, box-shadow .2s ease; }\n.ds-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(6,166,214,.18), 0 2px 6px rgba(16,28,46,.06), 0 12px 32px rgba(16,28,46,.1); }\n.ds-btn-primary:focus-visible { outline: 2px solid var(--primary-2, #7c5cff); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "描边幽灵按钮，hover 文字与边框转信号青。",
+      "html": "<button class=\"ds-btn-ghost\">cat books.json</button>",
+      "css": ".ds-btn-ghost { font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 14px; font-weight: 600; padding: 11px 24px; border-radius: 10px; cursor: pointer; background: var(--surface, #fff); color: var(--muted, #5b6b80); border: 1px solid var(--line, #dbe3ed); transition: transform .2s ease, color .2s ease, border-color .2s ease; }\n.ds-btn-ghost:hover { transform: translateY(-2px); color: var(--primary, #06a6d6); border-color: var(--primary, #06a6d6); }\n.ds-btn-ghost:focus-visible { outline: 2px solid var(--primary, #06a6d6); outline-offset: 2px; }"
+    },
+    {
+      "name": "Chip（栏目语义标签）",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "终端注释风栏目标签：文字为语义色本身，底 12% tint，边框 30% tint。",
+      "html": "<span class=\"ds-chip ds-chip-tech\">// vue</span> <span class=\"ds-chip ds-chip-reading\">// 读书</span> <span class=\"ds-chip ds-chip-calligraphy\">// 习字</span>",
+      "css": ".ds-chip { font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 12px; padding: 2px 10px; border-radius: 6px; white-space: nowrap; border: 1px solid transparent; display: inline-block; }\n.ds-chip-tech { color: var(--primary, #06a6d6); background: color-mix(in srgb, var(--primary, #06a6d6) 12%, transparent); border-color: color-mix(in srgb, var(--primary, #06a6d6) 30%, transparent); }\n.ds-chip-reading { color: var(--primary-2, #7c5cff); background: color-mix(in srgb, var(--primary-2, #7c5cff) 12%, transparent); border-color: color-mix(in srgb, var(--primary-2, #7c5cff) 30%, transparent); }\n.ds-chip-calligraphy { color: var(--calligraphy, #d97a1f); background: color-mix(in srgb, var(--calligraphy, #d97a1f) 12%, transparent); border-color: color-mix(in srgb, var(--calligraphy, #d97a1f) 30%, transparent); }"
+    },
+    {
+      "name": "Nav Link（活跃态）",
+      "kind": "nav",
+      "refersTo": "nav-link-active",
+      "description": "导航链接：中文标签 + mono 命令前缀；活跃态青字 + 10% tint 底 + 青→紫渐变发光下划线。",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link ds-nav-active\" href=\"#\"><span class=\"ds-cmd\">/articles</span>文章</a><a class=\"ds-nav-link\" href=\"#\"><span class=\"ds-cmd\">/books</span>书单</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 2px; }\n.ds-nav-link { position: relative; text-decoration: none; color: var(--muted, #5b6b80); font-size: 14px; padding: 8px 13px; border-radius: 9px; transition: color .2s ease, background-color .2s ease; }\n.ds-nav-link:hover { color: var(--text, #101c2e); background: var(--surface-2, #e9eef5); }\n.ds-nav-active { color: var(--primary, #06a6d6); background: color-mix(in srgb, var(--primary, #06a6d6) 10%, transparent); }\n.ds-nav-active::after { content: ''; position: absolute; left: 14px; right: 14px; bottom: 1px; height: 2px; border-radius: 1px; background: linear-gradient(90deg, var(--primary, #06a6d6), var(--primary-2, #7c5cff)); box-shadow: 0 0 8px var(--primary, #06a6d6); }\n.ds-cmd { font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 11px; color: var(--faint, #93a1b3); margin-right: 5px; }"
+    },
+    {
+      "name": "终端窗口（签名组件）",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "首页 Hero 定音锤：三色窗口圆点 + mono 标题 + 命令输出行，全站气质的来源。",
+      "html": "<div class=\"ds-term\"><div class=\"ds-term-head\"><span class=\"ds-dot ds-dot-red\"></span><span class=\"ds-dot ds-dot-yellow\"></span><span class=\"ds-dot ds-dot-green\"></span><span class=\"ds-term-title\">~/yiwen — zsh</span></div><div class=\"ds-term-body\"><div class=\"ds-line ds-cmdline\">$ whoami</div><div class=\"ds-line\">&gt; 译文 — 前端开发工程师</div><div class=\"ds-line ds-cmdline\">$ uptime</div><div class=\"ds-line\">&gt; 临李斯《峄山碑》中 · 博客持续编译中…</div></div></div>",
+      "css": ".ds-term { background: var(--surface, #fff); border: 1px solid var(--line, #dbe3ed); border-radius: 14px; box-shadow: 0 1px 2px rgba(16,28,46,.05), 0 2px 8px rgba(16,28,46,.05); overflow: hidden; }\n.ds-term-head { display: flex; align-items: center; gap: 7px; padding: 12px 16px; border-bottom: 1px solid var(--line, #dbe3ed); }\n.ds-dot { width: 11px; height: 11px; border-radius: 50%; }\n.ds-dot-red { background: #ff5f57; }\n.ds-dot-yellow { background: #febc2e; }\n.ds-dot-green { background: #28c840; }\n.ds-term-title { font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 12px; color: var(--faint, #93a1b3); margin-left: 6px; letter-spacing: .3px; }\n.ds-term-body { padding: 18px 20px; }\n.ds-line { font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 13.5px; line-height: 1.9; color: var(--text, #101c2e); letter-spacing: .3px; }\n.ds-cmdline { color: var(--primary, #06a6d6); }"
+    },
+    {
+      "name": "Mono Label",
+      "kind": "custom",
+      "refersTo": "label",
+      "description": "仪器读数样式：页面标题前置命令标签 / 章节编号 / 注释出处，统一 mono + 青色。",
+      "html": "<h2 class=\"ds-sec-head\"><span class=\"ds-mono-tag\">01/</span> 最新提交</h2>",
+      "css": ".ds-sec-head { margin: 0; font-size: 22px; font-weight: 700; color: var(--text, #101c2e); display: flex; align-items: center; gap: 10px; }\n.ds-mono-tag { font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 14px; color: var(--primary, #06a6d6); font-weight: 500; letter-spacing: .3px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "霓虹夜航 × 极昼实验室",
+    "overview": "这是一座同时运转着两套光源的数字花园：深色主题是「霓虹夜航」——深夜里青蓝与电紫的辉光点亮终端窗口，像一台不肯下线的机器；浅色主题是「极昼实验室」——冷灰蓝底色上的白昼工作台，同一套仪器在日光下运转。两套主题共享同一批色相（青 + 电紫双引擎），只是把亮度换了个方向。\n\n系统的骨架是终端隐喻：mono 字体承担所有\"仪器读数\"角色，中文正文用系统无衬线体保证可读性。文案本身就是终端语言——$ whoami、ls ./articles——视觉与文案互为印证。习字栏目独享一支琥珀橙，毛笔字内容像一枚被小心嵌入仪器的印章。\n\n整体密度舒适、留白大方；装饰克制但反馈炫：默认状态安静，hover 时辉光点亮、角标亮起、卡片上浮——静如仪器待机，动如霓虹通电。",
+    "keyCharacteristics": [
+      "终端隐喻贯穿文案与视觉：mono 标签、命令式按钮文案、光标闪烁",
+      "青（primary）+ 电紫（primary-2）双色引擎，全站渐变与辉光都只在这两色之间发生",
+      "三栏目语义色：科技 = 青、阅读 = 电紫、习字 = 琥珀橙，色相即信息",
+      "卡片带取景框角标（左上青、右下紫），hover 点亮——全站签名细节",
+      "44px 网格背景从页面顶部渐隐，营造仪器台面的深度",
+      "明暗双主题一一对映，色相不变、只调亮度与饱和"
+    ],
+    "rules": [
+      { "name": "双色引擎规则", "body": "全站所有渐变、辉光、选中态只允许在青与电紫之间发生；引入第三种装饰色是破坏系统。", "section": "colors" },
+      { "name": "色相即信息规则", "body": "青为科技、紫为阅读、橙为习字——栏目标签的底色永远是语义色 12% 透明度的 tint，边框是 30%，文字是语义色本身。新栏目必须先领一支自己的语义色，不得借用。", "section": "colors" },
+      { "name": "绿只报状态规则", "body": "常驻绿只出现在运行状态指示上，绝不作为装饰或强调色。", "section": "colors" },
+      { "name": "Mono 只读数规则", "body": "等宽字体只承担\"机器输出\"语义（命令、编号、出处、元数据），中文正文与标题不用 mono；宋体衬线是引文专属声部，正文与标题同样不得使用。", "section": "typography" },
+      { "name": "静如待机规则", "body": "卡片静止时只有 shadow-sm；上浮（-4px）、辉光、角标点亮三件事必须同时发生在 hover，一次把\"通电感\"给足。", "section": "elevation" }
+    ],
+    "dos": [
+      "Do 新增栏目标签时先申领语义色，按 12% / 30% / 原色三层公式生成 tint 底、边框和文字",
+      "Do 用 mono 承担所有元数据读数（编号、出处、命令、图注），小标签 letter-spacing 2px",
+      "Do hover 反馈三件套一起给：位移 + 辉光 + 角标/边框点亮（卡片）；位移 + 变色（按钮）",
+      "Do 所有渐变和辉光只用 青 + 电紫 双色；深浅主题成对定义，色相对映",
+      "Do 移动端以 720px 为统一临界点：汉堡菜单、单列、隐藏命令前缀"
+    ],
+    "donts": [
+      "Don't 引入第三种装饰性色相；绿只用于状态指示，沙金/石灰只用于约定俗成的图标位",
+      "Don't 给静止状态的卡片加辉光或上浮——\"通电\"只发生在 hover",
+      "Don't 用实线表达\"作者的声音\"——想法批注、正文链接、分隔线用虚线，这是手写感的专用语法",
+      "Don't 在中文正文或标题上用等宽字体或宋体衬线——mono 只读数，Songti 只引文，第三声部不得越界",
+      "Don't 引入系统栈之外的 Web Font 或花哨衬线体——三套系统字体栈（中文无衬线 + 等宽 + 宋体）就是全部"
+    ]
+  }
+}
