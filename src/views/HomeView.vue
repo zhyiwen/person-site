@@ -4,7 +4,8 @@ import { books, matchStatus } from '../data/books'
 import TypeWriter from '../components/TypeWriter.vue'
 import ArticleCard from '../components/ArticleCard.vue'
 
-const latest = POSTS.slice(0, 3)
+/* 首页文章网格是两列，取偶数篇刚好铺满，不留半行空位 */
+const latest = POSTS.slice(0, 4)
 const finishedCount = books.filter((b) => matchStatus(b, 'finished')).length
 
 const termLines = [
@@ -234,9 +235,10 @@ h1 .dim {
   font-weight: 600;
 }
 .more:hover { text-shadow: 0 0 12px var(--primary); }
+/* 文章卡两列：卡片更宽，标题和标签都不用挤 */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 
