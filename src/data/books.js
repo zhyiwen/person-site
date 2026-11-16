@@ -1423,7 +1423,7 @@ export const books = [
     myRating: 4,
     paused: false,
     totalPages: 5584,
-    currentPage: 1370,
+    currentPage: 1534,
   },
   {
     title: "不要担心2小时和8公里以外的事情",
@@ -1541,8 +1541,18 @@ export const books = [
     image: "s34771271",
     doubanRating: 8.7,
     myRating: 0,
-    totalPages: 272,
-    currentPage: 10,
+    totalPages: 265,
+    currentPage: 22,
+  },
+  {
+    title: "苏轼传 诗酒趁年华",
+    author: "陈舞萼",
+    category: "history",
+    image: "s34453257",
+    doubanRating: 7.8,
+    myRating: 0,
+    totalPages: 285,
+    currentPage: 8,
   },
 ];
 
