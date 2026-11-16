@@ -112,6 +112,7 @@ export const CAT_LABEL = {
   tech: '技术笔记',
   reading: '读书',
   calligraphy: '习字',
+  movie: '影视',
 }
 
 /* src/assets/ink/ 下的习作原图，供 Markdown 用 ink:文件名 引用 */

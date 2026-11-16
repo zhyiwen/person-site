@@ -11,6 +11,7 @@ const filters = [
   { key: 'all', label: 'all' },
   { key: 'tech', label: 'tech' },
   { key: 'reading', label: 'reading' },
+  { key: 'movie', label: 'movie' },
   { key: 'calligraphy', label: 'ink' },
 ]
 
