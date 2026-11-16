@@ -32,12 +32,15 @@ export const WORKS = Object.entries(files)
     return {
       file,
       url,
+      hidden: !!meta.hidden,
       title: meta.title || parsed.title,
       date: meta.date || parsed.date,
       copy: meta.copy || '',
       note: meta.note || '',
     }
   })
+  // meta 里标了 hidden 的只在文章里用，不上作品墙（同一件作品的多角度照片）
+  .filter((w) => !w.hidden)
   // 新的在前
   .sort((a, b) => (b.date || '').localeCompare(a.date || '') || a.file.localeCompare(b.file))
 
