@@ -76,22 +76,26 @@ watch(active, (v) => {
 
     <slot name="empty" v-if="!shown.length" />
 
-    <!-- 大图 -->
-    <transition name="lb">
-      <div v-if="active >= 0" class="lightbox" @click.self="close">
-        <button class="lb-close" aria-label="关闭" @click="close">✕</button>
-        <button v-if="canNav" class="lb-nav prev" aria-label="上一张" @click.stop="step(-1)">‹</button>
-        <figure class="lb-figure">
-          <img :src="shown[active].url" :alt="shown[active].title" />
-          <figcaption class="mono">
-            {{ shown[active].title }}
-            <span v-if="shown[active].date"> · {{ shown[active].date }}</span>
-            <span v-if="shown[active].copy"> · {{ shown[active].copy }}</span>
-          </figcaption>
-        </figure>
-        <button v-if="canNav" class="lb-nav next" aria-label="下一张" @click.stop="step(1)">›</button>
-      </div>
-    </transition>
+    <!-- 大图：必须 Teleport 到 body。
+         祖先若带 transform（v-reveal 动画收尾会留 translateY(0)），
+         position:fixed 会以它为包含块，大图就被塞进区块里并被裁掉 -->
+    <Teleport to="body">
+      <transition name="lb">
+        <div v-if="active >= 0" class="lightbox" @click.self="close">
+          <button class="lb-close" aria-label="关闭" @click="close">✕</button>
+          <button v-if="canNav" class="lb-nav prev" aria-label="上一张" @click.stop="step(-1)">‹</button>
+          <figure class="lb-figure">
+            <img :src="shown[active].url" :alt="shown[active].title" />
+            <figcaption class="mono">
+              {{ shown[active].title }}
+              <span v-if="shown[active].date"> · {{ shown[active].date }}</span>
+              <span v-if="shown[active].copy"> · {{ shown[active].copy }}</span>
+            </figcaption>
+          </figure>
+          <button v-if="canNav" class="lb-nav next" aria-label="下一张" @click.stop="step(1)">›</button>
+        </div>
+      </transition>
+    </Teleport>
   </div>
 </template>
 
@@ -176,13 +180,14 @@ figcaption {
   z-index: 200;
   background: rgba(4, 10, 16, 0.9);
   backdrop-filter: blur(6px);
-  display: grid;
-  place-items: center;
+  display: flex;
+  overflow: auto;              /* 视口太矮时可滚动，不再被裁切 */
+  overscroll-behavior: contain;
   padding: 40px 72px;
 }
 .lb-figure {
+  margin: auto;                /* 小于视口时居中；超出时自动让位给滚动条，不裁顶部 */
   max-width: 100%;
-  max-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -196,6 +201,16 @@ figcaption {
   border-radius: 10px;
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
   background: #0b1118;
+}
+/* 窗口很矮时（横屏手机、小窗）：把高度的决定权交给滚动，图更大更清楚 */
+@media (max-height: 560px) {
+  .lightbox {
+    padding: 24px 16px;
+  }
+  .lb-figure img {
+    max-height: none;
+    max-width: min(92vw, 900px);
+  }
 }
 .lb-figure figcaption {
   font-size: 12px;
