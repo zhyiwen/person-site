@@ -347,7 +347,10 @@ watch([keyword, activeCat, activeStatus, activeSort], () => {
             </span>
             <span v-else-if="b.paused" class="em-paused">已搁置</span>
             <span v-else class="em-reading">
-              在读 {{ b.currentPage }}/{{ b.totalPages }}
+              在读 {{ b.currentPage }}/{{ b.totalPages
+              }}<template v-if="b.currentPage && b.totalPages">
+                · {{ Math.round((b.currentPage / b.totalPages) * 100) }}%</template
+              >
             </span>
             <span v-if="b.wordCount" class="wc">{{ b.wordCount }}</span>
           </div>
