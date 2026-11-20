@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 
 /**
  * 作品墙（瀑布流 + 大图浏览）
@@ -11,49 +11,54 @@ const props = defineProps({
   works: { type: Array, default: () => [] },
   limit: { type: Number, default: 0 },
   /** masonry = 瀑布流（全集页）；grid = 等宽等高三列网格（习字页预览） */
-  layout: { type: String, default: 'masonry' },
-})
+  layout: { type: String, default: "masonry" },
+});
 
-const shown = computed(() => (props.limit > 0 ? props.works.slice(0, props.limit) : props.works))
+const shown = computed(() =>
+  props.limit > 0 ? props.works.slice(0, props.limit) : props.works,
+);
 
 /* ---------- 大图浏览 ---------- */
-const active = ref(-1)
-const canNav = computed(() => shown.value.length > 1)
+const active = ref(-1);
+const canNav = computed(() => shown.value.length > 1);
 
 function open(i) {
-  active.value = i
+  active.value = i;
 }
 function close() {
-  active.value = -1
+  active.value = -1;
 }
 function step(d) {
-  const n = shown.value.length
-  if (!n) return
-  active.value = (active.value + d + n) % n
+  const n = shown.value.length;
+  if (!n) return;
+  active.value = (active.value + d + n) % n;
 }
 
 function onKey(e) {
-  if (active.value < 0) return
-  if (e.key === 'Escape') close()
-  if (e.key === 'ArrowLeft') step(-1)
-  if (e.key === 'ArrowRight') step(1)
+  if (active.value < 0) return;
+  if (e.key === "Escape") close();
+  if (e.key === "ArrowLeft") step(-1);
+  if (e.key === "ArrowRight") step(1);
 }
 
-onMounted(() => window.addEventListener('keydown', onKey))
+onMounted(() => window.addEventListener("keydown", onKey));
 onUnmounted(() => {
-  window.removeEventListener('keydown', onKey)
-  document.body.style.overflow = ''
-})
+  window.removeEventListener("keydown", onKey);
+  document.body.style.overflow = "";
+});
 
 /* 大图打开时锁住背景滚动 */
 watch(active, (v) => {
-  document.body.style.overflow = v >= 0 ? 'hidden' : ''
-})
+  document.body.style.overflow = v >= 0 ? "hidden" : "";
+});
 </script>
 
 <template>
   <div class="ink-wall">
-    <div v-if="shown.length" :class="['wall-grid', { 'is-grid': layout === 'grid' }]">
+    <div
+      v-if="shown.length"
+      :class="['wall-grid', { 'is-grid': layout === 'grid' }]"
+    >
       <figure
         v-for="(w, i) in shown"
         :key="w.file"
@@ -85,7 +90,14 @@ watch(active, (v) => {
       <transition name="lb">
         <div v-if="active >= 0" class="lightbox" @click.self="close">
           <button class="lb-close" aria-label="关闭" @click="close">✕</button>
-          <button v-if="canNav" class="lb-nav prev" aria-label="上一张" @click.stop="step(-1)">‹</button>
+          <button
+            v-if="canNav"
+            class="lb-nav prev"
+            aria-label="上一张"
+            @click.stop="step(-1)"
+          >
+            ‹
+          </button>
           <figure class="lb-figure">
             <img :src="shown[active].url" :alt="shown[active].title" />
             <figcaption class="mono">
@@ -94,7 +106,14 @@ watch(active, (v) => {
               <span v-if="shown[active].copy"> · {{ shown[active].copy }}</span>
             </figcaption>
           </figure>
-          <button v-if="canNav" class="lb-nav next" aria-label="下一张" @click.stop="step(1)">›</button>
+          <button
+            v-if="canNav"
+            class="lb-nav next"
+            aria-label="下一张"
+            @click.stop="step(1)"
+          >
+            ›
+          </button>
         </div>
       </transition>
     </Teleport>
@@ -119,7 +138,7 @@ watch(active, (v) => {
   margin: 0;
 }
 .is-grid .ph {
-  aspect-ratio: 1;
+  aspect-ratio: 1.5;
 }
 .is-grid .ph img {
   width: 100%;
@@ -160,7 +179,9 @@ watch(active, (v) => {
   background: var(--primary);
   opacity: 0;
   transform: translateY(4px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 .work:hover .zoom {
   opacity: 1;
@@ -201,12 +222,12 @@ figcaption {
   background: rgba(4, 10, 16, 0.9);
   backdrop-filter: blur(6px);
   display: flex;
-  overflow: auto;              /* 视口太矮时可滚动，不再被裁切 */
+  overflow: auto; /* 视口太矮时可滚动，不再被裁切 */
   overscroll-behavior: contain;
   padding: 40px 72px;
 }
 .lb-figure {
-  margin: auto;                /* 小于视口时居中；超出时自动让位给滚动条，不裁顶部 */
+  margin: auto; /* 小于视口时居中；超出时自动让位给滚动条，不裁顶部 */
   max-width: 100%;
   display: flex;
   flex-direction: column;
@@ -260,7 +281,9 @@ figcaption {
   color: #dde7f2;
   font-size: 14px;
   cursor: pointer;
-  transition: transform 0.25s ease, background 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease;
 }
 .lb-close:hover {
   transform: rotate(90deg);
@@ -279,7 +302,9 @@ figcaption {
   font-size: 24px;
   line-height: 1;
   cursor: pointer;
-  transition: background 0.25s ease, border-color 0.25s ease;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
 }
 .lb-nav:hover {
   background: rgba(255, 255, 255, 0.16);

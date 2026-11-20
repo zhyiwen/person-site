@@ -1542,7 +1542,7 @@ export const books = [
     doubanRating: 8.7,
     myRating: 0,
     totalPages: 265,
-    currentPage: 22,
+    currentPage: 140,
   },
   {
     title: "苏轼传 诗酒趁年华",
