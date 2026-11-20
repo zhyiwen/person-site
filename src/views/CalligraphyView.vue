@@ -127,6 +127,7 @@ const overflow = computed(() => works.length > PREVIEW_SHOW);
 .glyph-cell {
   position: relative;
   aspect-ratio: 1;
+  overflow: hidden;
   display: grid;
   place-items: center;
   border-radius: 12px;
@@ -161,7 +162,7 @@ const overflow = computed(() => works.length > PREVIEW_SHOW);
   -webkit-mask-position: center;
   mask-position: center;
 }
-/* 书体角标：左上角，篆 / 隶 / 楷 / 行 / 草 */
+/* 书体角标：左上角，篆 / 隶 / 楷 / 行 / 草；刻意调淡，不抢字的风头 */
 .glyph-script {
   position: absolute;
   top: 7px;
@@ -169,33 +170,30 @@ const overflow = computed(() => works.length > PREVIEW_SHOW);
   font-size: 11px;
   line-height: 1;
   letter-spacing: 1px;
-  color: var(--muted);
-  opacity: 0.9;
+  color: var(--faint);
+  opacity: 0.55;
 }
-/* 现代写法角标：右下角，繁体临写 → 简体对照 */
+/* 现代写法：右下角斜切角标，简体对照，只作轻提示 */
 .glyph-modern {
   position: absolute;
-  right: 6px;
-  bottom: 6px;
-  min-width: 21px;
-  padding: 2px 6px;
-  font-size: 12px;
-  line-height: 1.2;
-  text-align: center;
-  border-radius: 6px;
-  border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
-  background: color-mix(in srgb, var(--text) 7%, var(--surface));
+  right: 0;
+  bottom: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 6px;
+  font-size: 11px;
+  line-height: 1;
+  background: color-mix(in srgb, var(--text) 9%, var(--surface));
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
   color: var(--muted);
-  opacity: 1;
-  transition:
-    opacity 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
+  transition: color 0.2s ease, background 0.2s ease;
 }
 .glyph-cell:hover .glyph-modern {
-  opacity: 1;
   color: var(--primary-text);
-  border-color: color-mix(in srgb, var(--primary) 45%, var(--line));
+  background: color-mix(in srgb, var(--primary) 16%, var(--surface));
 }
 /* 悬停详情：自定义标签，比原生 title 快且清晰 */
 .glyph-tip {
