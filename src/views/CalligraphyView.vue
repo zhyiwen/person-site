@@ -173,26 +173,34 @@ const overflow = computed(() => works.length > PREVIEW_SHOW);
   color: var(--faint);
   opacity: 0.55;
 }
-/* 现代写法：右下角斜切角标，简体对照，只作轻提示 */
+/* 现代写法：右下角斜切角标，简体对照，只作轻提示
+   注意：三角画在 ::before 上，clip-path 不能直接裁元素本身，
+   否则斜边会削掉简体字的左上部分 */
 .glyph-modern {
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
-  /* 往内收 8px：卡片有 12px 圆角，贴着角放会把字裁掉 */
-  padding: 0 8px 8px 0;
+  /* 右下留 6/5px：既落在三角里，又避开卡片 12px 圆角 */
+  padding: 0 6px 5px 0;
   font-size: 11px;
   line-height: 1;
+  color: var(--primary-text);
+}
+.glyph-modern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background: color-mix(in srgb, var(--primary) 22%, transparent);
   clip-path: polygon(100% 0, 100% 100%, 0 100%);
-  color: var(--primary-text);
   transition: background 0.2s ease;
 }
-.glyph-cell:hover .glyph-modern {
+.glyph-cell:hover .glyph-modern::before {
   background: color-mix(in srgb, var(--primary) 36%, transparent);
 }
 /* 悬停详情：自定义标签，比原生 title 快且清晰 */
