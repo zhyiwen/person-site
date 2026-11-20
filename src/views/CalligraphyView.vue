@@ -38,7 +38,7 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
           class="glyph-cell"
           v-reveal="80 + i * 55"
         >
-          <span class="glyph" :style="{ '--mask': `url(${c.url})` }" :title="c.char"></span>
+          <span class="glyph" :style="{ '--mask': `url(${c.url})` }" :title="c.source ? `${c.char} · ${c.source}` : c.char"></span>
         </div>
       </div>
       <p class="glyph-src mono">// {{ CHARS_SOURCE }}</p>
@@ -94,8 +94,9 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
 /* ---------- 集字 ---------- */
 .glyphs { margin-bottom: 44px; }
 .glyph-row {
+  /* 格数随收集的字数自动换行，不再固定 8 格 */
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
   gap: 10px;
 }
 .glyph-cell {
@@ -217,7 +218,7 @@ code {
 .empty-hint { font-size: 14px; color: var(--muted); }
 
 @media (max-width: 860px) {
-  .glyph-row { grid-template-columns: repeat(4, 1fr); }
+  .glyph-row { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); }
   .posts .grid { grid-template-columns: 1fr; }
 }
 </style>
