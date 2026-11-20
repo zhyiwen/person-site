@@ -53,13 +53,16 @@ def split_block(size, rows, cols, rect, inset=0.0):
     ]
 
 
-def paper_map(region, block=24, q=0.85):
+def paper_map(region, block=None, q=0.88):
     """估计每一小块的「纸面亮度」，再插值回整张格子。
 
     取每块的高分位值（亮的大概率是纸），既避开墨迹把背景拉黑，
     也能吸收照片的明暗渐变。返回与格子同尺寸的 L 图。
     """
     w, h = region.size
+    # 分块大小随图片尺寸走：大图上笔画也粗，块太小会把笔画本身当成纸面
+    if block is None:
+        block = max(16, min(w, h) // 10)
     px = region.load()
     bw, bh = (w + block - 1) // block, (h + block - 1) // block
     small = Image.new("L", (bw, bh), 235)
@@ -186,6 +189,7 @@ def main():
     ap.add_argument("--preview", help="只画切分预览图到这个路径，不切字")
     ap.add_argument("--invert", action="store_true", help="白字黑底的图用这个")
     ap.add_argument("--threshold", type=int, default=128, help="（保留兼容，自适应算法下不再使用）")
+    ap.add_argument("--single", action="store_true", help="整张图就是同一个字（已切好的单字图），配合 --chars 用")
     ap.add_argument("--inset", type=float, default=5, help="每格向内收的百分比，用来避开格线，默认 5")
     ap.add_argument("--contrast", type=int, default=30, help="判定为笔画的最小反差百分比（默认 30，即比纸面暗 30%%）；带格线残留就调大，笔画残缺就调小")
     args = ap.parse_args()
@@ -205,8 +209,25 @@ def main():
         print(f"预览已存 {args.preview}")
         return
 
-    if not (args.rows and args.cols and args.cells and args.chars):
+    if not args.single and not (args.rows and args.cols and args.cells and args.chars):
         sys.exit("需要 --rows --cols --cells --chars（想先看切法就加 --preview）")
+
+    if args.single:
+        if not args.chars:
+            sys.exit("--single 需要 --chars")
+        idx = args.start or next_index()
+        w, h = img.size
+        box = (round(w * 0.02), round(h * 0.02), round(w * 0.98), round(h * 0.98))
+        for ch in [c.strip() for c in args.chars.split(",")]:
+            out = cut_cell(gray, box, args.invert, args.threshold, args.contrast)
+            if out is None:
+                print(f"跳过 {ch}（没找到墨迹，试试调 --contrast）")
+                continue
+            name = f"{idx:02d}-{ch}" + (f"-{args.source}" if args.source else "") + ".png"
+            out.save(os.path.join(OUT_DIR, name))
+            print(f"✓ {name}")
+            idx += 1
+        return
 
     grid = split_block(img.size, args.rows, args.cols, rect, args.inset / 100)
     cells = [tuple(int(n) for n in c.split(":")) for c in args.cells.split(",")]
