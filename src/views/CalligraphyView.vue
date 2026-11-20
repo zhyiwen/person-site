@@ -11,13 +11,11 @@ const chars = CHARS
 const works = WORKS
 
 /**
- * 作品不多时全部平铺（3 列正好排满 3 行），
- * 超过这个数量才收起、露出「查看全部」入口，全集在 /works
+ * 习字页只露最新 6 件，等宽等高的三列方块（InkWall layout="grid"），
+ * 全集保持瀑布流，在 /works
  */
-const FULL_SHOW = 9
-const overflow = computed(() => works.length > FULL_SHOW)
-/** 不收起时传 0 = 全部显示 */
-const previewLimit = computed(() => (overflow.value ? FULL_SHOW : 0))
+const PREVIEW_SHOW = 6
+const overflow = computed(() => works.length > PREVIEW_SHOW)
 </script>
 
 <template>
@@ -52,8 +50,8 @@ const previewLimit = computed(() => (overflow.value ? FULL_SHOW : 0))
         <span class="count mono">{{ works.length ? works.length + ' pieces' : 'empty' }}</span>
       </div>
 
-      <!-- 有照片：9 张以内全部平铺，多了才收起 -->
-      <InkWall v-if="works.length" :works="works" :limit="previewLimit" />
+      <!-- 最新 6 件，等宽等高；全集（瀑布流）在 /works -->
+      <InkWall v-if="works.length" :works="works" :limit="PREVIEW_SHOW" layout="grid" />
 
       <!-- 没照片：空状态 -->
       <div v-else class="card wall-empty" v-reveal>

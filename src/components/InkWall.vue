@@ -10,6 +10,8 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 const props = defineProps({
   works: { type: Array, default: () => [] },
   limit: { type: Number, default: 0 },
+  /** masonry = 瀑布流（全集页）；grid = 等宽等高三列网格（习字页预览） */
+  layout: { type: String, default: 'masonry' },
 })
 
 const shown = computed(() => (props.limit > 0 ? props.works.slice(0, props.limit) : props.works))
@@ -51,7 +53,7 @@ watch(active, (v) => {
 
 <template>
   <div class="ink-wall">
-    <div v-if="shown.length" class="wall-grid">
+    <div v-if="shown.length" :class="['wall-grid', { 'is-grid': layout === 'grid' }]">
       <figure
         v-for="(w, i) in shown"
         :key="w.file"
@@ -105,6 +107,24 @@ watch(active, (v) => {
   /* 不裁切、不留边带，照片按原比例排 */
   columns: 3;
   column-gap: 16px;
+}
+/* 等宽等高网格（习字页预览用）：三列方块，封面裁切补满 */
+.wall-grid.is-grid {
+  columns: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.is-grid .work {
+  margin: 0;
+}
+.is-grid .ph {
+  aspect-ratio: 1;
+}
+.is-grid .ph img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .work {
   display: block;
@@ -284,6 +304,9 @@ figcaption {
 @media (max-width: 860px) {
   .wall-grid {
     columns: 2;
+  }
+  .wall-grid.is-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
   .lightbox {
     padding: 24px 12px;
