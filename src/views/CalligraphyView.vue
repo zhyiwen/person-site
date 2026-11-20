@@ -38,7 +38,8 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
           class="glyph-cell"
           v-reveal="80 + i * 55"
         >
-          <span class="glyph" :style="{ '--mask': `url(${c.url})` }" :title="c.source ? `${c.char} · ${c.source}` : c.char"></span>
+          <span class="glyph" :style="{ '--mask': `url(${c.url})` }"></span>
+          <span class="glyph-tip mono">{{ c.char }} · {{ c.source }}</span>
         </div>
       </div>
       <p class="glyph-src mono">// {{ CHARS_SOURCE }}</p>
@@ -94,12 +95,13 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
 /* ---------- 集字 ---------- */
 .glyphs { margin-bottom: 44px; }
 .glyph-row {
-  /* 格数随收集的字数自动换行，不再固定 8 格 */
+  /* 格数随收集的字数自动换行：最小 84px，宽屏尽量挤进同一行，避免末行只剩一个字 */
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
   gap: 10px;
 }
 .glyph-cell {
+  position: relative;
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -112,6 +114,7 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
 }
 .glyph-cell:hover {
   transform: translateY(-5px);
+  z-index: 3;
   color: var(--primary);
   border-color: color-mix(in srgb, var(--primary) 45%, var(--line));
   box-shadow: var(--glow);
@@ -129,6 +132,29 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
   mask-position: center;
+}
+/* 悬停详情：自定义标签，比原生 title 快且清晰 */
+.glyph-tip {
+  position: absolute;
+  left: 50%;
+  bottom: 9px;
+  transform: translate(-50%, 4px);
+  white-space: nowrap;
+  padding: 3px 9px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--primary) 40%, var(--line));
+  background: color-mix(in srgb, var(--surface) 92%, var(--primary) 8%);
+  color: var(--text);
+  box-shadow: var(--glow);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.glyph-cell:hover .glyph-tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 .glyph-src {
   margin-top: 12px;
