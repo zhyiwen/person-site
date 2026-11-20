@@ -1,21 +1,22 @@
 <script setup>
-import { computed } from 'vue'
-import { CHARS, CHARS_SOURCE } from '../data/chars'
-import { postsByCategory } from '../utils/posts'
-import { WORKS } from '../utils/works'
-import InkWall from '../components/InkWall.vue'
-import ArticleCard from '../components/ArticleCard.vue'
+import { computed } from "vue";
+import { CHARS, SCRIPT_STATS } from "../data/chars";
+import { postsByCategory } from "../utils/posts";
+import { WORKS } from "../utils/works";
+import InkWall from "../components/InkWall.vue";
+import ArticleCard from "../components/ArticleCard.vue";
 
-const posts = postsByCategory('calligraphy')
-const chars = CHARS
-const works = WORKS
+const posts = postsByCategory("calligraphy");
+const chars = CHARS;
+const scriptStats = SCRIPT_STATS;
+const works = WORKS;
 
 /**
  * 习字页只露最新 6 件，等宽等高的三列方块（InkWall layout="grid"），
  * 全集保持瀑布流，在 /works
  */
-const PREVIEW_SHOW = 6
-const overflow = computed(() => works.length > PREVIEW_SHOW)
+const PREVIEW_SHOW = 6;
+const overflow = computed(() => works.length > PREVIEW_SHOW);
 </script>
 
 <template>
@@ -29,7 +30,10 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
     <section v-if="chars.length" class="glyphs" v-reveal="40">
       <div class="wall-head">
         <h2 class="sec-title mono">🖌️ ink_tiles/ — 集字</h2>
-        <span class="count mono">{{ chars.length }} chars</span>
+        <span class="count mono">
+          <span v-for="s in scriptStats" :key="s.script" class="st">{{ s.script }} {{ s.count }}</span>
+          <span class="dim">{{ chars.length }} chars</span>
+        </span>
       </div>
       <div class="glyph-row">
         <div
@@ -39,33 +43,43 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
           v-reveal="80 + i * 55"
         >
           <span class="glyph" :style="{ '--mask': `url(${c.url})` }"></span>
+          <span v-if="c.script" class="glyph-script mono">{{ c.script }}</span>
+          <span class="glyph-modern mono" :title="c.char">{{ c.modern }}</span>
           <span class="glyph-tip mono">{{ c.char }} · {{ c.source }}</span>
         </div>
       </div>
-      <p class="glyph-src mono">// {{ CHARS_SOURCE }}</p>
+      <!-- <p class="glyph-src mono">// {{ CHARS_SOURCE }}</p> -->
     </section>
 
     <section class="wall" v-reveal="60">
       <div class="wall-head">
         <h2 class="sec-title mono">🖼️ ink_wall/ — 整篇习作</h2>
-        <span class="count mono">{{ works.length ? works.length + ' pieces' : 'empty' }}</span>
+        <span class="count mono">{{
+          works.length ? works.length + " pieces" : "empty"
+        }}</span>
       </div>
 
       <!-- 最新 6 件，等宽等高；全集（瀑布流）在 /works -->
-      <InkWall v-if="works.length" :works="works" :limit="PREVIEW_SHOW" layout="grid" />
+      <InkWall
+        v-if="works.length"
+        :works="works"
+        :limit="PREVIEW_SHOW"
+        layout="grid"
+      />
 
       <!-- 没照片：空状态 -->
       <div v-else class="card wall-empty" v-reveal>
         <span class="empty-plus mono">+</span>
         <p class="empty-line mono">&gt; ink_wall/ is empty</p>
         <p class="empty-hint">
-          整篇临帖照片放进 <code>src/assets/ink/</code>，命名 <code>日期-标题.jpg</code>，这里会自动排成作品墙。
+          整篇临帖照片放进 <code>src/assets/ink/</code>，命名
+          <code>日期-标题.jpg</code>，这里会自动排成作品墙。
         </p>
       </div>
 
       <!-- 入口常在：不收起时也不让 /works 变成无 UI 入口的幽灵页 -->
       <router-link v-if="works.length" to="/works" class="wall-more mono">
-        {{ overflow ? `全部 ${works.length} 张作品 →` : '作品全集 →' }}
+        {{ overflow ? `全部 ${works.length} 张作品 →` : "作品全集 →" }}
       </router-link>
     </section>
 
@@ -73,12 +87,20 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
       <h2 class="sec-title mono" v-reveal>✍️ ink_log/*.md</h2>
 
       <div v-if="posts.length" class="grid">
-        <ArticleCard v-for="(p, i) in posts" :key="p.slug" :post="p" :delay="i * 80" />
+        <ArticleCard
+          v-for="(p, i) in posts"
+          :key="p.slug"
+          :post="p"
+          :delay="i * 80"
+        />
       </div>
 
       <div v-else class="card empty" v-reveal>
         <p class="empty-line mono">&gt; ink_log/ is empty</p>
-        <p class="empty-hint">习字记录还没开始写 —— 哪一遍临得最有感觉，或者卡在哪一笔，写下来就是一篇。</p>
+        <p class="empty-hint">
+          习字记录还没开始写 ——
+          哪一遍临得最有感觉，或者卡在哪一笔，写下来就是一篇。
+        </p>
       </div>
     </section>
   </div>
@@ -93,7 +115,9 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
 }
 
 /* ---------- 集字 ---------- */
-.glyphs { margin-bottom: 44px; }
+.glyphs {
+  margin-bottom: 44px;
+}
 .glyph-row {
   /* 格数随收集的字数自动换行：最小 84px，宽屏尽量挤进同一行，避免末行只剩一个字 */
   display: grid;
@@ -109,8 +133,11 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
   border: 1px solid var(--line);
   background: color-mix(in srgb, var(--surface) 55%, transparent);
   color: var(--text);
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease;
 }
 .glyph-cell:hover {
   transform: translateY(-5px);
@@ -119,10 +146,11 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
   border-color: color-mix(in srgb, var(--primary) 45%, var(--line));
   box-shadow: var(--glow);
 }
-/* PNG 的 alpha 当蒙版，颜色跟随主题 */
+/* PNG 的 alpha 当蒙版，颜色跟随主题；下留 8px 给简体角标让位 */
 .glyph {
-  width: 66%;
-  height: 66%;
+  width: 64%;
+  height: 64%;
+  margin-bottom: 8px;
   background: currentColor;
   -webkit-mask-image: var(--mask);
   mask-image: var(--mask);
@@ -133,28 +161,66 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
   -webkit-mask-position: center;
   mask-position: center;
 }
+/* 书体角标：左上角，篆 / 隶 / 楷 / 行 / 草 */
+.glyph-script {
+  position: absolute;
+  top: 7px;
+  left: 9px;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 1px;
+  color: var(--muted);
+  opacity: 0.9;
+}
+/* 现代写法角标：右下角，繁体临写 → 简体对照 */
+.glyph-modern {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  min-width: 21px;
+  padding: 2px 6px;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+  background: color-mix(in srgb, var(--text) 7%, var(--surface));
+  color: var(--muted);
+  opacity: 1;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.glyph-cell:hover .glyph-modern {
+  opacity: 1;
+  color: var(--primary-text);
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--line));
+}
 /* 悬停详情：自定义标签，比原生 title 快且清晰 */
 .glyph-tip {
   position: absolute;
-  left: 50%;
-  bottom: 9px;
-  transform: translate(-50%, 4px);
+  left: 7px;
+  bottom: 7px;
+  transform: translateY(4px);
   white-space: nowrap;
-  padding: 3px 9px;
-  font-size: 11px;
+  padding: 2px 8px;
+  font-size: 10px;
   letter-spacing: 0.5px;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--primary) 40%, var(--line));
-  background: color-mix(in srgb, var(--surface) 92%, var(--primary) 8%);
+  background: color-mix(in srgb, var(--surface) 96%, var(--primary) 4%);
   color: var(--text);
   box-shadow: var(--glow);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 .glyph-cell:hover .glyph-tip {
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: translateY(0);
 }
 .glyph-src {
   margin-top: 12px;
@@ -171,7 +237,21 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
   justify-content: space-between;
   gap: 12px;
 }
-.count { font-size: 12px; color: var(--faint); letter-spacing: 1px; }
+.count {
+  font-size: 12px;
+  color: var(--faint);
+  letter-spacing: 1px;
+}
+/* 集字头部的书体统计：篆 7 · 楷 3 · 10 chars */
+.count .st {
+  margin-right: 10px;
+  color: var(--calligraphy-text);
+}
+.count .dim {
+  padding-left: 10px;
+  border-left: 1px solid var(--line);
+  opacity: 0.75;
+}
 
 .wall-more {
   display: block;
@@ -185,7 +265,10 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
   border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--line));
   border-radius: 999px;
   background: color-mix(in srgb, var(--primary) 7%, transparent);
-  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
 }
 .wall-more:hover {
   background: color-mix(in srgb, var(--primary) 14%, transparent);
@@ -201,7 +284,10 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
   box-shadow: none;
   animation: slotIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.wall-empty:hover { transform: none; box-shadow: none; }
+.wall-empty:hover {
+  transform: none;
+  box-shadow: none;
+}
 .empty-plus {
   display: inline-grid;
   place-items: center;
@@ -214,8 +300,14 @@ const overflow = computed(() => works.length > PREVIEW_SHOW)
   margin-bottom: 12px;
 }
 @keyframes slotIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 code {
   font-family: var(--mono);
@@ -227,7 +319,9 @@ code {
 }
 
 /* ---------- 文章列表 ---------- */
-.posts { margin-top: 40px; }
+.posts {
+  margin-top: 40px;
+}
 .posts .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -239,12 +333,26 @@ code {
   box-shadow: none;
   border-style: dashed;
 }
-.empty:hover { transform: none; box-shadow: none; }
-.empty-line { font-size: 13px; color: var(--primary-text); margin-bottom: 8px; }
-.empty-hint { font-size: 14px; color: var(--muted); }
+.empty:hover {
+  transform: none;
+  box-shadow: none;
+}
+.empty-line {
+  font-size: 13px;
+  color: var(--primary-text);
+  margin-bottom: 8px;
+}
+.empty-hint {
+  font-size: 14px;
+  color: var(--muted);
+}
 
 @media (max-width: 860px) {
-  .glyph-row { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); }
-  .posts .grid { grid-template-columns: 1fr; }
+  .glyph-row {
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  }
+  .posts .grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

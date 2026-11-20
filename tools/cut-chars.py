@@ -184,6 +184,8 @@ def main():
     ap.add_argument("--cols", type=int, help="网格列数")
     ap.add_argument("--cells", help="要哪些格（1 起，行:列），如 1:1,1:2,2:3")
     ap.add_argument("--chars", help="对应的字，逗号分隔，如 嗣,世,稱")
+    ap.add_argument("--script", default="", help="书体：篆/隶/楷/行/草，会写进文件名，网站用来显示角标")
+
     ap.add_argument("--source", default="", help="出处，会写进文件名，如 单字日课")
     ap.add_argument("--start", type=int, default=0, help="起始序号，默认接在现有文件后面")
     ap.add_argument("--preview", help="只画切分预览图到这个路径，不切字")
@@ -233,7 +235,8 @@ def main():
             if out is None:
                 print(f"跳过 {ch}（没找到墨迹，试试调 --contrast）")
                 continue
-            name = f"{idx:02d}-{ch}" + (f"-{args.source}" if args.source else "") + ".png"
+            name = (f"{idx:02d}-" + (f"{args.script}-" if args.script else "") + ch
+                    + (f"-{args.source}" if args.source else "") + ".png")
             out.save(os.path.join(OUT_DIR, name))
             print(f"✓ {name}")
             idx += 1
@@ -251,7 +254,8 @@ def main():
         if out is None:
             print(f"跳过 {r}:{c}（这格没找到墨迹，试试调 --threshold）")
             continue
-        name = f"{idx:02d}-{ch}" + (f"-{args.source}" if args.source else "") + ".png"
+        name = (f"{idx:02d}-" + (f"{args.script}-" if args.script else "") + ch
+                    + (f"-{args.source}" if args.source else "") + ".png")
         out.save(os.path.join(OUT_DIR, name))
         print(f"✓ {name}  <- 格 {r}:{c}")
         idx += 1
