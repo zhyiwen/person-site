@@ -216,6 +216,16 @@ def main():
         if not args.chars:
             sys.exit("--single 需要 --chars")
         idx = args.start or next_index()
+
+        # 小图（截图/缩略图）直接放大到 420 画布会有明显马赛克：
+        # 先把源图 LANCZOS 放大到短边 >= 560 再取样，边缘才平滑
+        from PIL import ImageFilter
+        short = min(img.size)
+        if short < 560:
+            k = 560 / short
+            img = img.resize((round(img.width * k), round(img.height * k)), Image.LANCZOS)
+            img = img.filter(ImageFilter.UnsharpMask(radius=2.0, percent=60, threshold=2))
+            gray = img.convert("L")
         w, h = img.size
         box = (round(w * 0.02), round(h * 0.02), round(w * 0.98), round(h * 0.98))
         for ch in [c.strip() for c in args.chars.split(",")]:
