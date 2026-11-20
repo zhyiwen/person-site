@@ -178,22 +178,22 @@ const overflow = computed(() => works.length > PREVIEW_SHOW);
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 6px;
+  justify-content: flex-end;
+  /* 往内收 8px：卡片有 12px 圆角，贴着角放会把字裁掉 */
+  padding: 0 8px 8px 0;
   font-size: 11px;
   line-height: 1;
-  background: color-mix(in srgb, var(--text) 9%, var(--surface));
+  background: color-mix(in srgb, var(--primary) 22%, transparent);
   clip-path: polygon(100% 0, 100% 100%, 0 100%);
-  color: var(--muted);
-  transition: color 0.2s ease, background 0.2s ease;
+  color: var(--primary-text);
+  transition: background 0.2s ease;
 }
 .glyph-cell:hover .glyph-modern {
-  color: var(--primary-text);
-  background: color-mix(in srgb, var(--primary) 16%, var(--surface));
+  background: color-mix(in srgb, var(--primary) 36%, transparent);
 }
 /* 悬停详情：自定义标签，比原生 title 快且清晰 */
 .glyph-tip {
